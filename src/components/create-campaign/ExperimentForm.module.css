@@ -1,0 +1,25 @@
+.form-container {
+    @apply flex justify-center items-center min-h-screen min-w-full p-4;
+}
+
+.form {
+    @apply bg-white rounded-lg shadow-md p-8 w-full max-w-7xl;
+}
+
+.input {
+    @apply w-full p-2 border rounded text-black;
+}
+
+.label {
+    @apply block text-gray-700 mb-2;
+}
+
+.button {
+    @apply w-full bg-gradient-to-r from-[#7823E7] to-[#0BA1F8] text-white p-3 rounded;
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #7823E7, #0BA1F8);
+    -webkit-background-clip: text;
+    color: transparent;
+}
