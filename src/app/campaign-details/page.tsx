@@ -73,7 +73,7 @@ const CampaignContent = () => {
         setDonateSuccess(null);
     
         try {
-            const txSignature = await donateFund(walletContextState, campaign.campaignIndex, donationAmount);
+            const txSignature = await donateFund(walletContextState, new BN(campaign.campaignIndex), donationAmount);
             setDonateSuccess(`Transaction successful: ${txSignature}`);
             setShowDonatePopup(true);
         } catch (err: any) {
@@ -92,7 +92,7 @@ const CampaignContent = () => {
 
     const handleClaimFund = async () => {
         if (!campaign) return;
-        if (!campaign.bnIndex) {
+        if (!campaign.campaignIndex) {
             setClaimError("Campaign index is not defined");
             return;
         }
@@ -106,8 +106,8 @@ const CampaignContent = () => {
                 throw new Error("Campaign deposit deadline has not passed yet");
             }
             
-            const txSignature = await claimFundRaised(walletContextState, campaign.bnIndex);
-            setClaimSuccess(`Transaction successful: ${txSignature}`);
+            const txSignature = await claimFundRaised(walletContextState, new BN(campaign.campaignIndex));
+            setClaimSuccess(`Transaction successful`);
             setShowPopup(true);
         } catch (err: any) {
             console.error(err);
@@ -126,12 +126,12 @@ const CampaignContent = () => {
 
     const handleClosePopup = () => {
         setShowPopup(false);
-        router.push('/');
+        router.back();
     }
 
     const handleCloseDonatePopup = () => {
         setShowDonatePopup(false);
-        router.push('/');
+        router.back();
     }
 
     useEffect(() => {
@@ -195,15 +195,17 @@ const CampaignContent = () => {
             const hasDepositPassed = campaign.depositDeadline.toNumber() < currentTimestamp;
             const hasTradePassed = campaign.tradeDeadline.toNumber() < currentTimestamp;
             setCanClaim(hasDepositPassed && !hasTradePassed);
+            // setCanClaim(hasDepositPassed);
             setCanDonate(!hasDepositPassed);
         }
     }, [campaign]);
 
       if (loading) {
         return (
-          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 flex items-center gap-3 bg-white rounded-lg px-6 py-4">
-            <Loader2 className="h-10 w-10 animate-spin text-gray-800" />
-            <span className="text-2xl font-semibold text-gray-800">
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 flex items-center gap-3 bg-transparent rounded-lg px-6 py-4"
+          style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
+            <Loader2 className="h-10 w-10 animate-spin text-white text-800" />
+            <span className="text-2xl font-semibold text-white text-800">
               Loading campaigns...
             </span>
           </div>
@@ -222,36 +224,36 @@ const CampaignContent = () => {
     return (
       <div className="flex justify-center items-start min-h-screen pt-10 pb-8">
         <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-gray-100 rounded-xl p-8">
-                <div className="bg-white rounded-lg shadow-lg p-8">
-                    <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+            <div className="bg-slate-800 rounded-xl p-8">
+                <div className="bg-transparent rounded-lg shadow-lg p-8" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
+                    <h1 className="text-3xl font-bold text-center mb-8 text-white text-800">
                         Campaign Details
                     </h1>
         
                     <div className="grid gap-6">
                         {/* Basic Information */}
                         <div className="border-b pb-6">
-                            <h2 className="text-2xl font-semibold mb-4 text-gray-700">
+                            <h2 className="text-2xl font-semibold mb-4 text-white text-700">
                                 {campaign.name}
                             </h2>
                             <p className="text-lg mb-2">
-                                <span className="font-medium text-gray-600">Token Symbol: </span>
-                                <span className="text-gray-800">{campaign.symbol}</span>
+                                <span className="font-medium text-white text-600">Token Symbol: </span>
+                                <span className=" text-white text-800">{campaign.symbol}</span>
                             </p>
                         </div>
         
                         {/* Funding Information */}
                         <div className="border-b pb-6">
-                            <h3 className="text-xl font-semibold mb-4 text-gray-700">Funding Status</h3>
+                            <h3 className="text-xl font-semibold mb-4 text-white text-700">Funding Status</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-gray-600">Total Fund Raised</p>
+                                <div className="bg-slate-800 p-4" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1', borderRadius: '1rem' }}>
+                                    <p className="text-white text-600">Total Fund Raised</p>
                                     <p className="text-2xl font-bold text-green-600">
                                         {(campaign.totalFundRaised / 1e9).toFixed(2)} SOL
                                     </p>
                                 </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-gray-600">Donation Goal</p>
+                                <div className="bg-slate-800 p-4" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1', borderRadius: '1rem' }}>                                    
+                                    <p className="text-white text-600">Donation Goal</p>
                                     <p className="text-2xl font-bold text-blue-600">
                                         {campaign.donationGoal.toFixed(2)} SOL
                                     </p>
@@ -261,17 +263,17 @@ const CampaignContent = () => {
         
                         {/* Deadlines */}
                         <div className="border-b pb-6">
-                            <h3 className="text-xl font-semibold mb-4 text-gray-700">Important Dates</h3>
+                            <h3 className="text-xl font-semibold mb-4 text-white text-700">Important Dates</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-gray-600">Deposit Deadline</p>
-                                    <p className="text-lg font-semibold">
+                                <div className="bg-slate-800 p-4" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1', borderRadius: '1rem' }}>                                    
+                                    <p className="text-white text-600">Deposit Deadline</p>
+                                    <p className="text-lg text-white font-semibold">
                                         {new Date(campaign.depositDeadline.toNumber() * 1000).toLocaleDateString()}
                                     </p>
                                 </div>
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <p className="text-gray-600">Trade Deadline</p>
-                                    <p className="text-lg font-semibold">
+                                <div className="bg-slate-800 p-4" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1', borderRadius: '1rem' }}>                                    
+                                    <p className="text-white text-600">Trade Deadline</p>
+                                    <p className="text-lg text-white font-semibold">
                                         {new Date(campaign.tradeDeadline.toNumber() * 1000).toLocaleDateString()}
                                     </p>
                                 </div>
@@ -281,15 +283,15 @@ const CampaignContent = () => {
                         {/* Additional Information */}
                         {campaign.description && (
                             <div className="border-b pb-6">
-                                <h3 className="text-xl font-semibold mb-4 text-gray-700">Description</h3>
-                                <p className="text-gray-800 whitespace-pre-wrap">{campaign.description}</p>
+                                <h3 className="text-xl font-semibold mb-4 text-white text-700">Description</h3>
+                                <p className="text-white text-800 whitespace-pre-wrap">{campaign.description}</p>
                             </div>
                         )}
         
                         {/* Token Image */}
                         {campaign.image && (
                             <div className="mt-6">
-                                <h3 className="text-xl font-semibold mb-4 text-gray-700">Token Image</h3>
+                                <h3 className="text-xl font-semibold mb-4 text-white text-700">Token Image</h3>
                                 <div className="w-48 h-48 rounded-lg overflow-hidden">
                                     <img
                                         src={campaign.image}
@@ -301,22 +303,15 @@ const CampaignContent = () => {
                         )}
                     <div className="flex justify-center items-center w-full">
                      <div className="relative inline-block group">
-                       {/* <button
-                         onClick={handleClaimFund}
-                         className={`font-bold py-2 px-4 rounded ${
-                           canClaim
-                             ? 'bg-green-500 hover:bg-green-700 text-white cursor-pointer'
-                             : 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                         }`}
-                         disabled={!canClaim || claiming}
-                       >
-                         {claiming ? 'Claiming...' : canClaim ? 'Claim Funds' : 'Claim Funds'}
-                       </button> */}
                        {isCreator && (
                             <button
                                 onClick={handleClaimFund}
                                 disabled={claiming || !canClaim}
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                className={`font-bold py-2 px-4 rounded ${
+                                    canClaim
+                                      ? 'bg-green-500 hover:bg-green-700 text-white cursor-pointer'
+                                      : 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                                }`}
                             >
                                 {claiming ? 'Claiming...' : 'Claim Funds'}
                             </button>
@@ -337,16 +332,19 @@ const CampaignContent = () => {
                     )}
                     <div className="flex justify-center items-center w-full">
                         <div className="relative inline-block group">
-                        <button
-                            onClick={handleDonateFundClick}
-                            className={`font-bold py-2 px-4 rounded ${
-                                canDonate
-                                ? 'bg-green-500 hover:bg-green-700 text-white cursor-pointer'
-                                : 'bg-gray-400 text-gray-700 cursor-not-allowed'
-                            }`}
-                            disabled={!canDonate || donating}                       >
-                            {donating ? 'Donating...' : canDonate ? 'Donate Funds': 'Donate Funds'}
-                        </button>
+                            {!isCreator && (
+                                <button
+                                    onClick={handleDonateFundClick}
+                                    className={`font-bold py-2 px-4 rounded ${
+                                        canDonate
+                                        ? 'bg-green-500 hover:bg-green-700 text-white cursor-pointer'
+                                        : 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                                    }`}
+                                    disabled={!canDonate || donating}
+                                >
+                                    {donating ? 'Donating...' : canDonate ? 'Donate Funds': 'Donate Funds'}
+                                </button>
+                            )}
                         {!canDonate && (
                             <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg whitespace-nowrap">
                                 You can only Donate Funds before the Deposit Deadline

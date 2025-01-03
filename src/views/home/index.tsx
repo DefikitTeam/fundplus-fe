@@ -86,8 +86,8 @@ const HomePage: React.FC = () => {
 
     const filteredCampaigns = visibleCampaigns.filter((camp) => {
         const now = Math.floor(Date.now() / 1000);
-        const depositPassed = camp.depositDeadline >= now;
-        const tradePassed = camp.tradeDeadline >= now;
+        const depositPassed = camp.depositDeadline <= now;
+        const tradePassed = camp.tradeDeadline <= now;
         const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
         // const hasFunds = camp.totalFundRaised > 0;
       
@@ -103,10 +103,11 @@ const HomePage: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 flex items-center gap-3 bg-white rounded-lg px-6 py-4">
-                <Loader2 className="h-10 w-10 animate-spin text-gray-800" />
-                <span className="text-2xl font-semibold text-gray-800">
-                    Loading campaigns...
+            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 flex items-center gap-3 bg-transparent rounded-lg px-6 py-4"
+            style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
+                <Loader2 className="h-10 w-10 animate-spin text-white text-800" />
+                <span className="text-2xl font-semibold text-white text-800">
+                Loading campaigns...
                 </span>
             </div>
         );
@@ -133,20 +134,20 @@ const HomePage: React.FC = () => {
                         <DashboardStats
                             liveCount={visibleCampaigns.filter((camp) => {
                                 const now = Math.floor(Date.now() / 1000);
-                                const tradePassed = camp.tradeDeadline >= now;
+                                const tradePassed = camp.tradeDeadline <= now;
                                 const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
                                 return (reachedGoal && tradePassed); // LIVE
                             }).length}
                             upcomingCount={visibleCampaigns.filter((camp) => {
                                 const now = Math.floor(Date.now() / 1000);
-                                const depositPassed = camp.depositDeadline >= now;
-                                const tradePassed = camp.tradeDeadline >= now;
+                                const depositPassed = camp.depositDeadline <= now;
+                                const tradePassed = camp.tradeDeadline <= now;
                                 const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
                                 return ((reachedGoal && !tradePassed) || (!reachedGoal && depositPassed && !tradePassed)); // UPCOMING
                             }).length}
                             raisingCount={visibleCampaigns.filter((camp) => {
                                 const now = Math.floor(Date.now() / 1000);
-                                const depositPassed = camp.depositDeadline >= now;
+                                const depositPassed = camp.depositDeadline <= now;
                                 const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
                                 return (!reachedGoal && !depositPassed); // RAISING
                             }).length}
@@ -157,47 +158,39 @@ const HomePage: React.FC = () => {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 bg-slate-800 gap-4 py-8 w-full max-w-full px-4 rounded">
-                    {filteredCampaigns.map((camp) => (
-                            <div
-                                key={camp.id}
-                                className={styles['card']}
-                                onClick={() => handleCardClick(camp, camp.id)}
-                                style={{ cursor: 'pointer' }}
-                            >
-                                <div className="flex items-center">
-                                    {/* Token Image */}
-                                    <div className="w-16 h-16 mr-4">
-                                        <img
-                                            src={camp.image || '/path/to/placeholder.png'} // Use the fetched image or a placeholder
-                                            alt={`${camp.name} Token`}
-                                            className="w-full h-full object-cover rounded"
-                                        />
-                                    </div>
+                        {filteredCampaigns.map((camp) => {
+                        return (    
+                        <div key={camp.id} className={styles['card']} onClick={() => handleCardClick(camp, camp.id)} style={{ cursor: 'pointer' }}>
 
-                                    {/* Campaign Information */}
-                                    <div>
-                                        <h3 className="text-lg font-semibold">
-                                            {camp.name}
-                                        </h3>
-                                        <p className="text-sm">
-                                            <strong>Token Symbol:</strong> {camp.symbol}
-                                        </p>
-                                        <p className="text-sm">
-                                            <strong>Donation Goal:</strong> {camp.donationGoal} SOL
-                                        </p>
-                                        <p className="text-sm">
-                                            <strong>Fund Raised:</strong>{' '}
-                                            {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
-                                        </p>
-                                        {camp.description && (
-                                            <p className="text-sm mt-2">
-                                                {camp.description}
-                                            </p>
-                                        )}
-                                    </div>
+                            <div className="flex flex-col sm:flex-row items-start">
+                                {/* Token Image */}
+                                {camp.image && (
+                                <img
+                                    src={camp.image || '/path/to/placeholder.png'}
+                                    alt={`${camp.name} Token`}
+                                    className="w-40 h-40 sm:w-32 sm:h-32 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
+                                />
+                                )}
+
+                                {/* Campaign Information */}
+                                <div className="text-center sm:text-left">
+                                    <p className="text-sm">
+                                        <strong>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
+                                    </p>
+                                    <p className="text-sm">
+                                        <strong>Donation Goal:</strong> {camp.donationGoal} SOL
+                                    </p>
+                                    <p className="text-sm">
+                                        <strong>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
+                                    </p>
+                                    <p className="text-lg font-bold">
+                                        {camp.name} ({camp.symbol}): <span className='font-normal text-sm'>{camp.description}</span>
+                                    </p>
                                 </div>
                             </div>
-                        ))}
+                        </div>
+                        );
+                        })}
 
                         
                     </div>

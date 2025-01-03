@@ -10,148 +10,100 @@ import { BN, AnchorProvider, Program } from '@coral-xyz/anchor';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import NavigationMenu from '../../components/navigation-menu/NavigationMenu';
 import DashboardStats from '../../components/dashboard-stats/DashboardStats';
-import MarketStatsCard from '../../components/market-stats-card/MarketStatsCard';
 import getCampaign from '@/scripts/get-campaign';
 import { AdapterWallet } from '@/scripts/create-campaign';
 import { PrePump } from '@/scripts/idl/pre_pump';
-import claimFundRaised from '@/scripts/claim-fund-raised';
 
 import styles from './campaigns.module.css';
 
 interface CampaignData {
+    id: string;
+    creator: string;
+    campaignIndex: number;
     name: string;
     symbol: string;
-    depositDeadline: BN;
-    tradeDeadline: BN;
+    uri: string;
     totalFundRaised: number;
     donationGoal: number;
-    uri: string;
-    description?: string;
-    image?: string;
-    campaignIndex: number; // Add this field
-    bnIndex: BN;
-    isClaimedFund?: boolean;
+    depositDeadline: BN;
+    tradeDeadline: BN;
+    timestamp: number;
+    description?: string; // Optional: Description from metadata
+    image?: string;       // Optional: Image URL from metadata
 }
 
-interface CampaignMetadata {
-    description?: string;
-    image?: string;
-}
+// useEffect(() => {
 
+// })
 const AllCampaignsPage = () => {
 
-    //Constants for campaign data
-    const walletContextState = useWallet();
-    const { connected, publicKey, wallet } = walletContextState;
-    const [campaigns, setCampaigns] = useState<any[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-
-    const [selectedCampaign, setSelectedCampaign] = useState<CampaignData | null>(null);
-    const [showPopup, setShowPopup] = useState(false);
-    const [claiming, setClaiming] = useState(false);
-    const [claimError, setClaimError] = useState<string | null>(null);
-    const [claimSuccess, setClaimSuccess] = useState<string | null>(null);
-
-    const router = useRouter();
 
     const [selectedTab, setSelectedTab] = useState<'LIVE' | 'UPCOMING' | 'RAISING' | 'ALL'>('LIVE');
 
-    const handleTabChange = (tab: 'LIVE' | 'UPCOMING' | 'RAISING' | 'ALL') => {
-        setSelectedTab(tab);
+    const router = useRouter();
+    const walletContextState = useWallet();
+    const { connected, publicKey, wallet } = walletContextState;
+    console.log(publicKey?.toBase58().toString());
+
+    const fetchMyCampaigns = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/v1/campaign');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            // Find creator's campaign
+            const mcampaignData = data.data.filter((camp: any) => camp.creator === publicKey?.toBase58());
+            if (mcampaignData.length === 0) {
+                console.log('fetch failed');
+                setCampaigns([]);
+                setLoading(false);
+                return;
+            }
+
+            // Fetch metadata for each campaign to get the image and description
+            const campaignsWithMetadata: CampaignData[] = await Promise.all(
+                mcampaignData.map(async (camp: CampaignData) => {
+                    try {
+                        const metadataResponse = await fetch(camp.uri);
+                        if (!metadataResponse.ok) {
+                            throw new Error(`Failed to fetch metadata for campaign ${camp.id}`);
+                        }
+                        const metadata = await metadataResponse.json();
+                        return {
+                            ...camp,
+                            description: metadata.description,
+                            image: metadata.image,
+                        };
+                    } catch (metadataError) {
+                        console.error(metadataError);
+                        // Fallback to a placeholder image if metadata fetch fails
+                        return {
+                            ...camp,
+                            description: 'No description available.',
+                            image: '/path/to/placeholder.png', // Replace with your placeholder image path
+                        };
+                    }
+                })
+            );
+
+            setCampaigns(campaignsWithMetadata)
+        } catch (err) {
+            console.error(err);
+            setError('Failed to fetch campaigns');
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        if (!connected || !wallet?.adapter || !publicKey) {
-            setCampaigns([]);
-            setLoading(false);
-            return;
-        }
-
-        const fetchCampaigns = async () => {
-            if (!connected || !wallet?.adapter || !publicKey) return;
-            setLoading(true);
-
-            try {
-            // --------------------------------------
-            // 1. Reuse logic from create-campaign.ts to set up the Anchor Program
-            // --------------------------------------
-            const devnet = true;
-            const connection = new Connection(clusterApiUrl(devnet ? 'devnet' : 'mainnet-beta'), { commitment: 'confirmed' });
-            const adapterWallet = new AdapterWallet(walletContextState);
-            const provider = new AnchorProvider(connection, adapterWallet, { commitment: 'confirmed' });
-            const IDL: PrePump = require('@/scripts/idl/pre_pump.json');
-            const program = new Program(IDL, provider);
-
-            // --------------------------------------
-            // 2. Get creator's account to find the lastCampaignIndex
-            // --------------------------------------
-            const [creator] = PublicKey.findProgramAddressSync(
-                [Buffer.from('creator'), publicKey.toBuffer()],
-                program.programId
-            );
-            const creatorAccount: any = await program.account.creator.fetch(creator);
-            const lastCampaignIndex = creatorAccount.lastCampaignIndex.toNumber();
-
-            // --------------------------------------
-            // 3. Loop through indices, fetching individual campaigns with getCampaign
-            // --------------------------------------
-            const fetchedCampaigns: CampaignData[] = [];
-            for (let i = 0; i <= lastCampaignIndex; i++) {
-                try {
-                    const campaignData = await getCampaign(walletContextState, i);
-                    
-                    // Skip this campaign if it has been claimed
-                    if (campaignData.isClaimedFund) {
-                        continue;
-                    }
-
-                    let metadata: CampaignMetadata = {};
-                    if (campaignData.uri) {
-                        try {
-                            const response = await fetch(campaignData.uri);
-                            if (response.ok) {
-                                metadata = await response.json() as CampaignMetadata;
-                            } else {
-                                console.warn(`Failed to fetch metadata for index ${i}`);
-                            }
-                        } catch (metaErr) {
-                            console.warn(`Error fetching metadata for campaign index ${i}: ${metaErr}`);
-                        }
-                    }
-
-                    // Only add non-claimed campaigns to the list
-                    fetchedCampaigns.push({
-                        name: campaignData.name,
-                        symbol: campaignData.symbol,
-                        depositDeadline: campaignData.depositDeadline,
-                        tradeDeadline: campaignData.tradeDeadline,
-                        totalFundRaised: campaignData.totalFundRaised,
-                        donationGoal: campaignData.donationGoal,
-                        uri: campaignData.uri,
-                        description: metadata.description || '',
-                        image: metadata.image || '',
-                        campaignIndex: i,
-                        bnIndex: campaignData.index,
-                        isClaimedFund: campaignData.isClaimedFund
-                    });
-                } catch (e) {
-                    console.warn(`Skipping index ${i} due to error: ${e}`);
-                }
-            }
-
-            setCampaigns(fetchedCampaigns);
-            } catch (err) {
-            setError('Failed to fetch campaigns');
-            } finally {
-            setLoading(false);
-            }
-        };
-
-        fetchCampaigns();
-    }, [connected, wallet, publicKey]);
+        fetchMyCampaigns();
+    }, [publicKey]);
 
     if (!connected) {
         <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 flex items-center gap-3 bg-white rounded-lg px-6 py-4">
@@ -163,12 +115,13 @@ const AllCampaignsPage = () => {
     
     if (loading) {
         return (
-          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 flex items-center gap-3 bg-white rounded-lg px-6 py-4">
-            <Loader2 className="h-10 w-10 animate-spin text-gray-800" />
-            <span className="text-2xl font-semibold text-gray-800">
-              Loading campaigns...
-            </span>
-          </div>
+            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 flex items-center gap-3 bg-transparent rounded-lg px-6 py-4"
+            style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
+              <Loader2 className="h-10 w-10 animate-spin text-white text-800" />
+              <span className="text-2xl font-semibold text-white text-800">
+                Loading campaigns...
+              </span>
+            </div>
         );
     }
 
@@ -180,25 +133,19 @@ const AllCampaignsPage = () => {
         </div>
     }
     
-    const handleCardClick = (campaign: any, index: number) => {
+    const handleCardClick = (campaign: any, id: string) => {
         // setSelectedCampaign(campaign);
         // setShowPopup(true);
-        router.push(`/campaign-details?id=${index}`);
+        router.push(`/campaign-details?id=${id}`);
     }
-    
-    const handleClosePopup = () => {
-        setShowPopup(false);
-        setSelectedCampaign(null);
-    };
 
     const visibleCampaigns = campaigns.filter((camp) => camp.totalFundRaised > 0);
 
     const filteredCampaigns = visibleCampaigns.filter((camp) => {
         const now = Math.floor(Date.now() / 1000);
-        const depositPassed = camp.depositDeadline.toNumber() <= now;
-        const tradePassed = camp.tradeDeadline.toNumber() <= now;
-        const reachedGoal = camp.totalFundRaised >= camp.donationGoal;
-        // const hasFunds = camp.totalFundRaised > 0;
+        const depositPassed = camp.depositDeadline <= now;
+        const tradePassed = camp.tradeDeadline <= now;
+        const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
       
         if (selectedTab === 'LIVE')    return (reachedGoal && tradePassed);
         if (selectedTab === 'UPCOMING')return ((reachedGoal && !tradePassed) || (!reachedGoal && depositPassed && !tradePassed));
@@ -219,22 +166,21 @@ const AllCampaignsPage = () => {
                         <DashboardStats
                             liveCount={visibleCampaigns.filter((camp) => {
                                 const now = Math.floor(Date.now() / 1000);
-                                const depositPassed = camp.depositDeadline.toNumber() <= now;
-                                const tradePassed = camp.tradeDeadline.toNumber() <= now;
-                                const reachedGoal = camp.totalFundRaised >= camp.donationGoal;
+                                const tradePassed = camp.tradeDeadline <= now;
+                                const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
                                 return (reachedGoal && tradePassed); // LIVE
                             }).length}
                             upcomingCount={visibleCampaigns.filter((camp) => {
                                 const now = Math.floor(Date.now() / 1000);
-                                const depositPassed = camp.depositDeadline.toNumber() <= now;
-                                const tradePassed = camp.tradeDeadline.toNumber() <= now;
-                                const reachedGoal = camp.totalFundRaised >= camp.donationGoal;
+                                const depositPassed = camp.depositDeadline <= now;
+                                const tradePassed = camp.tradeDeadline <= now;
+                                const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
                                 return ((reachedGoal && !tradePassed) || (!reachedGoal && depositPassed && !tradePassed)); // UPCOMING
                             }).length}
                             raisingCount={visibleCampaigns.filter((camp) => {
                                 const now = Math.floor(Date.now() / 1000);
-                                const depositPassed = camp.depositDeadline.toNumber() <= now;
-                                const reachedGoal = camp.totalFundRaised >= camp.donationGoal;
+                                const depositPassed = camp.depositDeadline <= now;
+                                const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
                                 return (!reachedGoal && !depositPassed); // RAISING
                             }).length}
                             allCount={visibleCampaigns.length}
@@ -246,13 +192,13 @@ const AllCampaignsPage = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 bg-slate-800 gap-4 py-8 w-full max-w-full px-4 rounded">
                         {filteredCampaigns.map((camp) => {
                         return (    
-                        <div key={camp.campaignIndex} className={styles['card']} onClick={() => handleCardClick(camp, camp.campaignIndex)} style={{ cursor: 'pointer' }}>
+                        <div key={camp.id} className={styles['card']} onClick={() => handleCardClick(camp, camp.id)} style={{ cursor: 'pointer' }}>
 
                             <div className="flex flex-col sm:flex-row items-start">
                                 {/* Token Image */}
                                 {camp.image && (
                                 <img
-                                    src={camp.image}
+                                    src={camp.image || '/path/to/placeholder.png'}
                                     alt={`${camp.name} Token`}
                                     className="w-40 h-40 sm:w-32 sm:h-32 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
                                 />
@@ -260,21 +206,20 @@ const AllCampaignsPage = () => {
 
                                 {/* Campaign Information */}
                                 <div className="text-center sm:text-left">
-                                    <p className='text-sm'>
-                                        <strong>Created by:</strong> {}
-                                    </p>
                                     <p className="text-sm">
                                         <strong>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
+                                    </p>
+                                    <p className="text-sm">
+                                        <strong>Donation Goal:</strong> {camp.donationGoal} SOL
+                                    </p>
+                                    <p className="text-sm">
+                                        <strong>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
                                     </p>
                                     <p className="text-lg font-bold">
                                         {camp.name} ({camp.symbol}): <span className='font-normal text-sm'>{camp.description}</span>
                                     </p>
                                 </div>
                             </div>
-
-                            {/* <h3><strong>Name: </strong>{camp.name}</h3>
-                            <p><strong>Token Symbol: </strong>{camp.symbol}</p>
-                            <p><strong>Fund Raised: </strong>{(camp.totalFundRaised / 1e9).toFixed(2)} SOL</p> */}
                         </div>
                         );
                         })}
