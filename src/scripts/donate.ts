@@ -7,7 +7,7 @@ import { PrePump } from "./idl/pre_pump";
 import { AdapterWallet } from "./create-campaign";
 // import { sign } from "crypto";
 
-async function donateFund(walletAdapter: any, campaignIndexArg: number, amountArg: number) {
+async function donateFund(walletAdapter: any, campaignIndexArg: number, amountArg: number, creatorAddress: string) {
   const devnet = true;
   const connection = new Connection(clusterApiUrl(devnet ? "devnet" : "mainnet-beta"), { commitment: 'confirmed' });
   const wallet = new AdapterWallet(walletAdapter);
@@ -16,12 +16,13 @@ async function donateFund(walletAdapter: any, campaignIndexArg: number, amountAr
   const program = new Program(IDL, provider);
 
   const tx = new Transaction();
-  const creatorAddress = new PublicKey(wallet.publicKey); // REPLACE WITH CREATOR ADDRESS
+  // const creatorAddress = new PublicKey(wallet.publicKey); // REPLACE WITH CREATOR ADDRESS
+  const creatorPK = new PublicKey(creatorAddress);
   const campaignIndex = new BN(campaignIndexArg); // REPLACE WITH CAMPAIGN INDEX
   const amount = new BN(amountArg * LAMPORTS_PER_SOL); // 1 SOL
 
   tx.add(await program.methods.donate(
-    creatorAddress,
+    creatorPK,
     campaignIndex,
     amount,
   ).accounts({

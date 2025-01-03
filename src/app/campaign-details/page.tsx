@@ -50,8 +50,10 @@ const CampaignContent = () => {
     const [donateSuccess, setDonateSuccess] = useState<string | null>(null);
     const [canDonate, setCanDonate] = useState(false);
     const [showDonatePopup, setShowDonatePopup] = useState(false);
-    const [donationAmount, setDonationAmount] = useState(0);
+    const [donationAmount, setDonationAmount] = useState<number>(0.1);
     const [showDonateAmountPopup, setShowDonateAmountPopup] = useState(false);
+
+    const [isClosing, setIsClosing] = useState(false);
 
     const router = useRouter();
 
@@ -61,6 +63,11 @@ const CampaignContent = () => {
 
     const handleConfirmDonate = async () => {
         if (!campaign) return;
+
+        if (donationAmount < 0.1) {
+            setDonateError("Donation amount must be at least 0.1 SOL");
+            return;
+        }
 
         if (donationAmount <= 0) {
             setDonateError("Please enter a valid amount.");
@@ -73,7 +80,7 @@ const CampaignContent = () => {
         setDonateSuccess(null);
     
         try {
-            const txSignature = await donateFund(walletContextState, new BN(campaign.campaignIndex), donationAmount);
+            const txSignature = await donateFund(walletContextState, new BN(campaign.campaignIndex), donationAmount, campaign.creator);
             setDonateSuccess(`Transaction successful: ${txSignature}`);
             setShowDonatePopup(true);
         } catch (err: any) {
@@ -125,13 +132,19 @@ const CampaignContent = () => {
     };
 
     const handleClosePopup = () => {
-        setShowPopup(false);
-        router.back();
+        setIsClosing(true);
+        setTimeout(() => {
+            setShowDonatePopup(false);
+            router.back();
+        }, 15000);
     }
 
     const handleCloseDonatePopup = () => {
-        setShowDonatePopup(false);
-        router.back();
+        setIsClosing(true);
+        setTimeout(() => {
+            setShowDonatePopup(false);
+            router.back();
+        }, 15000);
     }
 
     useEffect(() => {
@@ -368,10 +381,18 @@ const CampaignContent = () => {
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                   <div className="bg-white p-6 rounded-lg shadow-lg">
                       <h2 className="text-2xl font-bold mb-4">Claim Successful</h2>
-                      <p className="mb-4">{claimSuccess}</p>
+                      {isClosing ? (
+                            <div className="flex items-center gap-3 mb-4">
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                                <p>Please wait a moment...</p>
+                            </div>
+                        ) : (
+                            <p className="mb-4">{donateSuccess}</p>
+                        )}
                       <button
                           onClick={handleClosePopup}
                           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                          disabled={isClosing}
                       >
                           OK
                       </button>
@@ -383,10 +404,18 @@ const CampaignContent = () => {
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <h2 className="text-2xl font-bold mb-4">Donation Successful</h2>
-                        <p className="mb-4">{donateSuccess}</p>
+                        {isClosing ? (
+                            <div className="flex items-center gap-3 mb-4">
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                                <p>Please wait a moment...</p>
+                            </div>
+                        ) : (
+                            <p className="mb-4">{donateSuccess}</p>
+                        )}
                         <button
                             onClick={handleCloseDonatePopup}
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            disabled={isClosing}
                         >
                             OK
                         </button>
@@ -398,10 +427,11 @@ const CampaignContent = () => {
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <h2 className="text-xl font-bold mb-4">Donate SOL</h2>
+                        <p className="mb-4">Enter the amount of SOL you want to donate (Minimal 0,1 SOL):</p>
                         <input
                             type="number"
                             min="0.1"
-                            step="0.1"
+                            // step="0.1"
                             value={donationAmount}
                             onChange={(e) => setDonationAmount(parseFloat(e.target.value))}
                             className="w-full p-2 border rounded mb-4"
