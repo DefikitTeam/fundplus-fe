@@ -39,18 +39,13 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ConnectionProvider endpoint={endpoint}>
-          <WalletProvider wallets={wallets} autoConnect>
+          <WalletProvider wallets={wallets} autoConnect={true}>
             <WalletModalProvider>
               <main className="relative min-h-screen min-w-full ">
                 <nav className="w-full flex justify-center items-center py-8">
                   <div className="flex-1 flex justify-center">
                     <PrePumpfun />
                   </div>
-                  {/* <div className="absolute top-4 right-4 flex flex-col items-end z-[100] break-words">
-                    <WalletMultiButton/>
-                    <WalletDisconnectButton/>
-                    <BalanceDisplay/>
-                  </div> */}
                   <div className="absolute top-4 right-4 flex flex-col items-end z-[100] break-words scale-90 origin-top-right">
                     <WalletMultiButton className="!px-4 !py-2 text-md" />
                     <WalletDisconnectButton className="!px-4 !py-2 text-md" />

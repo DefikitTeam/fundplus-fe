@@ -4,23 +4,23 @@ import styles from './DashboardStats.module.css';
 
 interface DashboardStatsProps {
     liveCount: number;
-    upcomingCount: number;
+    claimableCount: number;
     raisingCount: number;
     allCount: number;
-    selectedTab: 'LIVE' | 'UPCOMING' | 'RAISING' | 'ALL';
-    onTabChange: (tab: 'LIVE' | 'UPCOMING' | 'RAISING' | 'ALL') => void;
+    selectedTab: 'LIVE' | 'CLAIMABLE' | 'RAISING' | 'ALL';
+    onTabChange: (tab: 'LIVE' | 'CLAIMABLE' | 'RAISING' | 'ALL') => void;
 }
 
 const DashboardStats: React.FC<DashboardStatsProps> = ({
     liveCount,
-    upcomingCount,
+    claimableCount,
     raisingCount,
     allCount,
     selectedTab,
     onTabChange,
  }) => {
     // const [selectedTab, setSelectedTab] = useState<'LIVE' | 'UPCOMING' | 'ALL'>('LIVE');
-    // const allCount = liveCount + upcomingCount + raisingCount;
+    // const allCount = liveCount + claimableCount + raisingCount;
 
     // const handleTabClick = (tab: 'LIVE' | 'UPCOMING' | 'ALL') => {
     //     setSelectedTab(tab);
@@ -35,10 +35,10 @@ const DashboardStats: React.FC<DashboardStatsProps> = ({
                 {liveCount > 0 && <div className={styles['indicator']}></div>}
             </div>
 
-            <div className={`${styles['option-container']} ${selectedTab === 'UPCOMING' ? styles['active'] : ''} cursor-pointer`}
-                onClick={() => onTabChange('UPCOMING')}>
+            <div className={`${styles['option-container']} ${selectedTab === 'CLAIMABLE' ? styles['active'] : ''} cursor-pointer`}
+                onClick={() => onTabChange('CLAIMABLE')}>
                 <div className={`${styles['text-gray-400']} text-lg font-inria`}>
-                    <span>UPCOMING - {upcomingCount}</span>
+                    <span>CLAIMABLE - {claimableCount}</span>
                 </div>
                 {/* {upcomingCount > 0 && <div className={styles['indicator']}></div>} */}
             </div>

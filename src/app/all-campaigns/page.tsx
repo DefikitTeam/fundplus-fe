@@ -31,18 +31,16 @@ interface CampaignData {
     timestamp: number;
     description?: string; // Optional: Description from metadata
     image?: string;       // Optional: Image URL from metadata
+    status: string;
 }
 
-// useEffect(() => {
-
-// })
 const AllCampaignsPage = () => {
 
     const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    const [selectedTab, setSelectedTab] = useState<'LIVE' | 'UPCOMING' | 'RAISING' | 'ALL'>('LIVE');
+    const [selectedTab, setSelectedTab] = useState<'LIVE' | 'CLAIMABLE' | 'RAISING' | 'ALL'>('LIVE');
 
     const router = useRouter();
     const walletContextState = useWallet();
@@ -51,11 +49,17 @@ const AllCampaignsPage = () => {
 
     const fetchMyCampaigns = async () => {
         try {
-            const response = await fetch('http://localhost:3000/v1/campaign');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            const [response, statusResponse] = await Promise.all([
+                fetch('http://localhost:3000/v1/campaign'),
+                fetch('http://localhost:3000/v1/campaign/status')
+            ]);
+    
+            if (!response.ok || !statusResponse.ok) {
+                throw new Error('Failed to fetch campaigns or status');
             }
+    
             const data = await response.json();
+            const statusData = await statusResponse.json();
 
             // Find creator's campaign
             const mcampaignData = data.data.filter((camp: any) => camp.creator === publicKey?.toBase58());
@@ -66,6 +70,10 @@ const AllCampaignsPage = () => {
                 return;
             }
 
+            const statusMap = new Map(
+                statusData.data.map((item: any) => [`${item.creator}-${item.campaignIndex}`, item.status])
+            );
+
             // Fetch metadata for each campaign to get the image and description
             const campaignsWithMetadata: CampaignData[] = await Promise.all(
                 mcampaignData.map(async (camp: CampaignData) => {
@@ -75,10 +83,13 @@ const AllCampaignsPage = () => {
                             throw new Error(`Failed to fetch metadata for campaign ${camp.id}`);
                         }
                         const metadata = await metadataResponse.json();
+
+                        const status = statusMap.get(`${camp.creator}-${camp.campaignIndex}`) || 'UNKNOWN';
                         return {
                             ...camp,
                             description: metadata.description,
                             image: metadata.image,
+                            status: status
                         };
                     } catch (metadataError) {
                         console.error(metadataError);
@@ -87,6 +98,7 @@ const AllCampaignsPage = () => {
                             ...camp,
                             description: 'No description available.',
                             image: '/path/to/placeholder.png', // Replace with your placeholder image path
+                            status: statusMap.get(`${camp.creator}-${camp.campaignIndex}`) || 'UNKNOWN'
                         };
                     }
                 })
@@ -142,15 +154,18 @@ const AllCampaignsPage = () => {
     const visibleCampaigns = campaigns.filter((camp) => camp.totalFundRaised > 0);
 
     const filteredCampaigns = visibleCampaigns.filter((camp) => {
-        const now = Math.floor(Date.now() / 1000);
-        const depositPassed = camp.depositDeadline <= now;
-        const tradePassed = camp.tradeDeadline <= now;
-        const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
-      
-        if (selectedTab === 'LIVE')    return (reachedGoal && tradePassed);
-        if (selectedTab === 'UPCOMING')return ((reachedGoal && !tradePassed) || (!reachedGoal && depositPassed && !tradePassed));
-        if (selectedTab === 'RAISING') return (!reachedGoal && !depositPassed);
-        return true; // ALL
+        switch (selectedTab) {
+            case 'LIVE':
+                return camp.status === 'COMPLETED';
+            case 'CLAIMABLE':
+                return camp.status === 'FAILED';
+            case 'RAISING':
+                return camp.status === 'RAISING';
+            case 'ALL':
+                return true;
+            default:
+                return false;
+        }
     });
 
     return (
@@ -164,25 +179,9 @@ const AllCampaignsPage = () => {
                 <div className="flex flex-col w-full min-h-screen">
                     <div className="mb-8 w-full max-w-3xl mx-auto">
                         <DashboardStats
-                            liveCount={visibleCampaigns.filter((camp) => {
-                                const now = Math.floor(Date.now() / 1000);
-                                const tradePassed = camp.tradeDeadline <= now;
-                                const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
-                                return (reachedGoal && tradePassed); // LIVE
-                            }).length}
-                            upcomingCount={visibleCampaigns.filter((camp) => {
-                                const now = Math.floor(Date.now() / 1000);
-                                const depositPassed = camp.depositDeadline <= now;
-                                const tradePassed = camp.tradeDeadline <= now;
-                                const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
-                                return ((reachedGoal && !tradePassed) || (!reachedGoal && depositPassed && !tradePassed)); // UPCOMING
-                            }).length}
-                            raisingCount={visibleCampaigns.filter((camp) => {
-                                const now = Math.floor(Date.now() / 1000);
-                                const depositPassed = camp.depositDeadline <= now;
-                                const reachedGoal = (camp.totalFundRaised / 1e9) >= camp.donationGoal;
-                                return (!reachedGoal && !depositPassed); // RAISING
-                            }).length}
+                            liveCount={visibleCampaigns.filter(camp => camp.status === 'COMPLETED').length}
+                            claimableCount={visibleCampaigns.filter(camp => camp.status === 'FAILED').length}
+                            raisingCount={visibleCampaigns.filter(camp => camp.status === 'RAISING').length}
                             allCount={visibleCampaigns.length}
                             selectedTab={selectedTab}
                             onTabChange={setSelectedTab}

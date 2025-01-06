@@ -6,10 +6,13 @@ import { useEffect, useState, Suspense } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { BN } from '@coral-xyz/anchor';
 import { Loader2 } from 'lucide-react';
-import claimFundRaised from '@/scripts/claim-fund-raised';
 import {useRouter} from "next/navigation";
 import donateFund from '@/scripts/donate';
+<<<<<<< HEAD
 import Image from 'next/image';
+=======
+import claimFundRaised from '@/scripts/claim-fund-raised';
+>>>>>>> 942f5ae (refactor: update dashboard stats to use claimable count and adjust tab logic)
 // import { set } from '@metaplex-foundation/umi/serializers';
 // import type { CampaignData } from '@/types';
 
@@ -55,6 +58,7 @@ const CampaignContent = () => {
     const [showDonateAmountPopup, setShowDonateAmountPopup] = useState(false);
 
     const [isClosing, setIsClosing] = useState(false);
+    const [donatePopupError, setDonatePopupError] = useState<string | null>(null);
 
     const router = useRouter();
 
@@ -66,12 +70,12 @@ const CampaignContent = () => {
         if (!campaign) return;
 
         if (donationAmount < 0.1) {
-            setDonateError("Donation amount must be at least 0.1 SOL");
+            setDonatePopupError("Donation amount must be at least 0.1 SOL");
             return;
         }
 
         if (donationAmount <= 0) {
-            setDonateError("Please enter a valid amount.");
+            setDonatePopupError("Please enter a valid amount.");
             return;
         }
     
@@ -207,8 +211,8 @@ const CampaignContent = () => {
         if (campaign) {
             const currentTimestamp = Math.floor(Date.now() / 1000);
             const hasDepositPassed = campaign.depositDeadline.toNumber() < currentTimestamp;
-            const hasTradePassed = campaign.tradeDeadline.toNumber() < currentTimestamp;
-            setCanClaim(hasDepositPassed && !hasTradePassed);
+            const donationReached = (campaign.totalFundRaised / 1e9).toFixed(2) >= campaign.donationGoal;
+            setCanClaim(hasDepositPassed && !donationReached);
             // setCanClaim(hasDepositPassed);
             setCanDonate(!hasDepositPassed);
         }
@@ -438,6 +442,9 @@ const CampaignContent = () => {
                             className="w-full p-2 border rounded mb-4"
                             placeholder="Enter SOL amount"
                         />
+                        {donatePopupError && (
+                            <p className="text-red-500 text-sm mb-4">{donatePopupError}</p>
+                        )}
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setShowDonateAmountPopup(false)}
