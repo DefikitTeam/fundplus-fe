@@ -8,11 +8,7 @@ import { BN } from '@coral-xyz/anchor';
 import { Loader2 } from 'lucide-react';
 import {useRouter} from "next/navigation";
 import donateFund from '@/scripts/donate';
-<<<<<<< HEAD
 import Image from 'next/image';
-=======
-import claimFundRaised from '@/scripts/claim-fund-raised';
->>>>>>> 942f5ae (refactor: update dashboard stats to use claimable count and adjust tab logic)
 // import { set } from '@metaplex-foundation/umi/serializers';
 // import type { CampaignData } from '@/types';
 
