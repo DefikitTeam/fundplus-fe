@@ -9,6 +9,7 @@ import NavigationMenu from '../../components/navigation-menu/NavigationMenu';
 import DashboardStats from '../../components/dashboard-stats/DashboardStats';
 
 import styles from './app.module.css';
+import Image from 'next/image';
 
 interface CampaignData {
     id: string;
@@ -165,7 +166,7 @@ const HomePage: React.FC = () => {
                             <div className="flex flex-col sm:flex-row items-start">
                                 {/* Token Image */}
                                 {camp.image && (
-                                <img
+                                <Image
                                     src={camp.image || '/path/to/placeholder.png'}
                                     alt={`${camp.name} Token`}
                                     className="w-40 h-40 sm:w-32 sm:h-32 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
