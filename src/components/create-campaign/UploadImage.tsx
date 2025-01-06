@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useRef } from 'react';
 import { Upload, X } from 'lucide-react';
+import Image from 'next/image';
 
 interface ImageUploadFieldProps {
   required?: boolean;
@@ -110,7 +111,7 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
 
         {image ? (
           <div className="relative">
-            <img
+            <Image
               src={URL.createObjectURL(image)}
               alt="Preview"
               className="max-h-40 mx-auto rounded"

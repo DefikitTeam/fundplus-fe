@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './NavigationMenu.module.css';
 import HowItWorksModal from '../modals/HowItWorksModal';
+import Image from 'next/image';
 
 const NavigationMenu: React.FC = () => {
     const [activeLink, setActiveLink] = useState<string>('home');
@@ -36,7 +37,7 @@ const NavigationMenu: React.FC = () => {
     return (
         <nav className="flex justify-between items-center w-full" role="navigation" aria-label="Main navigation">
             <div className="flex items-center">
-                <img
+                <Image
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/8a86a4353d32cfb1db8f4b1cb1999f050dd0c20b0f28e78caadc47fa47cd0834?placeholderIfAbsent=true&apiKey=eab818b3eb2a4948adf5e95f36413932"
                     className="h-6 w-6" /* Reduce image size to half */
                     alt="Telegram icon"

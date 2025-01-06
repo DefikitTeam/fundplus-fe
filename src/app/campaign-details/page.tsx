@@ -9,6 +9,7 @@ import { Loader2 } from 'lucide-react';
 import claimFundRaised from '@/scripts/claim-fund-raised';
 import {useRouter} from "next/navigation";
 import donateFund from '@/scripts/donate';
+import Image from 'next/image';
 // import { set } from '@metaplex-foundation/umi/serializers';
 // import type { CampaignData } from '@/types';
 
@@ -113,7 +114,7 @@ const CampaignContent = () => {
                 throw new Error("Campaign deposit deadline has not passed yet");
             }
             
-            const txSignature = await claimFundRaised(walletContextState, new BN(campaign.campaignIndex));
+            // const txSignature = await claimFundRaised(walletContextState, new BN(campaign.campaignIndex));
             setClaimSuccess(`Transaction successful`);
             setShowPopup(true);
         } catch (err: any) {
@@ -306,7 +307,7 @@ const CampaignContent = () => {
                             <div className="mt-6">
                                 <h3 className="text-xl font-semibold mb-4 text-white text-700">Token Image</h3>
                                 <div className="w-48 h-48 rounded-lg overflow-hidden">
-                                    <img
+                                    <Image
                                         src={campaign.image}
                                         alt="Token"
                                         className="w-full h-full object-cover"
