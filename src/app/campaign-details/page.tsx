@@ -209,7 +209,6 @@ const CampaignContent = () => {
             const hasDepositPassed = campaign.depositDeadline.toNumber() < currentTimestamp;
             const donationReached = Number((campaign.totalFundRaised / 1e9).toFixed(2)) >= campaign.donationGoal;
             setCanClaim(hasDepositPassed && !donationReached);
-            // setCanClaim(hasDepositPassed);
             setCanDonate(!hasDepositPassed);
         }
     }, [campaign]);
