@@ -39,6 +39,8 @@ const NavigationMenu: React.FC = () => {
             <div className="flex items-center">
                 <Image
                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/8a86a4353d32cfb1db8f4b1cb1999f050dd0c20b0f28e78caadc47fa47cd0834?placeholderIfAbsent=true&apiKey=eab818b3eb2a4948adf5e95f36413932"
+                    width={6}
+                    height={6}
                     className="h-6 w-6" /* Reduce image size to half */
                     alt="Telegram icon"
                 />

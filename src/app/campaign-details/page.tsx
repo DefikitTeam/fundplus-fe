@@ -309,7 +309,13 @@ const CampaignContent = () => {
                                     <Image
                                         src={campaign.image}
                                         alt="Token"
+                                        width={192} // 48 * 4 for better quality
+                                        height={192}
                                         className="w-full h-full object-cover"
+                                        unoptimized={campaign.image.startsWith('https://gateway.pinata.cloud')} // Skip optimization for IPFS images
+                                        onError={(e) => {
+                                            e.currentTarget.src = '/path/to/placeholder.png';
+                                        }}
                                     />
                                 </div>
                             </div>

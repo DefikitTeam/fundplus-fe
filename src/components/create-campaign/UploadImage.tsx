@@ -114,6 +114,8 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
             <Image
               src={URL.createObjectURL(image)}
               alt="Preview"
+              width={200}
+              height={200}
               className="max-h-40 mx-auto rounded"
             />
             <button

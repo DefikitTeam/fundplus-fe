@@ -62,6 +62,15 @@ const HomePage: React.FC = () => {
                 campaignsData.data.map(async (camp: CampaignData) => {
                     try {
                         const metadataResponse = await fetch(camp.uri);
+                        if (!metadataResponse.ok) {
+                            console.warn(`Metadata fetch failed for ${camp.id}`);
+                            return {
+                              ...camp,
+                              description: 'No description available.',
+                              image: '/path/to/placeholder.png',
+                              status: statusMap.get(`${camp.creator}-${camp.campaignIndex}`) || 'UNKNOWN'
+                            };
+                        }
                         const metadata = await metadataResponse.json();
                         
                         // Get status for this campaign
@@ -161,7 +170,7 @@ const HomePage: React.FC = () => {
 
                     <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 bg-slate-800 gap-4 py-8 w-full max-w-full px-4 rounded">
                         {filteredCampaigns.map((camp) => {
-                        return (    
+                        return (
                         <div key={camp.id} className={styles['card']} onClick={() => handleCardClick(camp, camp.id)} style={{ cursor: 'pointer' }}>
 
                             <div className="flex flex-col sm:flex-row items-start">
@@ -170,6 +179,8 @@ const HomePage: React.FC = () => {
                                 <Image
                                     src={camp.image || '/path/to/placeholder.png'}
                                     alt={`${camp.name} Token`}
+                                    width={40}
+                                    height={40}
                                     className="w-40 h-40 sm:w-32 sm:h-32 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
                                 />
                                 )}

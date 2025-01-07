@@ -8,6 +8,9 @@ const nextConfig = {
   output: 'export',
   reactStrictMode: true,
   trailingSlash: true,
+  images: {
+    unoptimized: true  // Disable image optimization API for static export
+  },
   webpack: (config: any) => {
     config.resolve.fallback = {
       crypto: require.resolve('crypto-browserify'),
