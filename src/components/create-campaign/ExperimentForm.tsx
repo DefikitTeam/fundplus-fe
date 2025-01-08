@@ -48,52 +48,28 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
     });
 
     const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+
     const uploadToIPFS = async (file: File) => {
-        const PINATA_API_KEY = process.env.NEXT_PUBLIC_PINATA_API_KEY;
-        const PINATA_SECRET_API_KEY = process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY;
-        
-        if (!PINATA_API_KEY || !PINATA_SECRET_API_KEY) {
-            throw new Error('Pinata keys not found');
-        }
-    
         try {
-            // First upload the image
-            const newformData = new FormData();
-            newformData.append('file', file);
+            const form = new FormData();
+            form.append('file', file);
+            form.append('name', formData.name);
+            form.append('description', formData.uri);
     
-            const imageRes = await fetch('https://api.pinata.cloud/pinning/pinFileToIPFS', {
+            const response = await fetch('http://localhost:3000/v1/campaign/upload', {
                 method: 'POST',
-                headers: {
-                    'pinata_api_key': PINATA_API_KEY,
-                    'pinata_secret_api_key': PINATA_SECRET_API_KEY,
-                },
-                body: newformData
+                body: form
             });
     
-            const imageData = await imageRes.json();
-            const imageUrl = `https://gateway.pinata.cloud/ipfs/${imageData.IpfsHash}`;
+            if (!response.ok) {
+                throw new Error('Failed to upload metadata');
+            }
     
-            // Then upload the metadata
-            const metadata = {
-                name: formData.name,
-                description: formData.uri,
-                image: imageUrl
-            };
-    
-            const metadataRes = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'pinata_api_key': PINATA_API_KEY,
-                    'pinata_secret_api_key': PINATA_SECRET_API_KEY,
-                },
-                body: JSON.stringify(metadata)
-            });
-    
-            const metadataData = await metadataRes.json();
-            return `https://gateway.pinata.cloud/ipfs/${metadataData.IpfsHash}`;
+            const result = await response.json();
+            return result.data.url; // This will be your IPFS metadata URL
+            
         } catch (error) {
-            console.error('Error uploading to Pinata:', error);
+            console.error('Error uploading metadata:', error);
             throw error;
         }
     };
