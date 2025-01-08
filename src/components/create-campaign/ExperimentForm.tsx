@@ -23,11 +23,15 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
 
     const [showPopup, setShowPopup] = useState(false);
     const [showFailedPopup, setShowFailedPopup] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
     const router = useRouter();
 
     const handleClosePopup = () => {
-        setShowPopup(false);
-        router.push('/');
+        setIsClosing(true);
+        setTimeout(() => {
+            setShowPopup(false);
+            router.push('/');
+        }, 15000);
     }
 
     const handleCloseFailedPopup = () => {
@@ -355,7 +359,14 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg">
                         <h2 className="text-2xl font-bold mb-4">Create Campaign Successful</h2>
-                        <p className="mb-4">Your campaign has been created, you will be redirected to the homepage...</p>
+                        {isClosing ? (
+                            <div className="flex items-center gap-3 mb-4">
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                                <p>Please wait a moment, you will be redirected to the homepage...</p>
+                            </div>
+                        ) : (
+                            <p className="mb-4">Your campaign has been created</p>
+                        )}
                         <button
                             onClick={handleClosePopup}
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

@@ -43,3 +43,5 @@ yarn.lock
 package-lock.json
 .idea
 /.idea
+
+wrangler.toml

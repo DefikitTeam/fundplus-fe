@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
@@ -9,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import {useRouter} from "next/navigation";
 import donateFund from '@/scripts/donate';
 import Image from 'next/image';
+import claimFundRaised from '@/scripts/claim-fund-raised';
 // import { set } from '@metaplex-foundation/umi/serializers';
 // import type { CampaignData } from '@/types';
 
@@ -26,6 +28,7 @@ interface CampaignData {
     image?: string;
     campaignIndex: number;
     bnIndex: BN;
+    mint?: string;
 }
 
 // Create a separate component for the campaign content
@@ -114,7 +117,7 @@ const CampaignContent = () => {
                 throw new Error("Campaign deposit deadline has not passed yet");
             }
             
-            // const txSignature = await claimFundRaised(walletContextState, new BN(campaign.campaignIndex));
+            const txSignature = await claimFundRaised(walletContextState, new BN(campaign.campaignIndex));
             setClaimSuccess(`Transaction successful`);
             setShowPopup(true);
         } catch (err: any) {
@@ -292,6 +295,14 @@ const CampaignContent = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Token Creation Information */}
+                        {campaign.mint && (
+                            <div className="border-b pb-6">
+                                <h3 className="text-xl font-semibold mb-4 text-white text-700">Mint Address</h3>
+                                <p className="text-white text-800 whitespace-pre-wrap">{campaign.mint}</p>
+                            </div>
+                        )}
         
                         {/* Additional Information */}
                         {campaign.description && (

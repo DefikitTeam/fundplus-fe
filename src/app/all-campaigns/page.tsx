@@ -32,6 +32,7 @@ interface CampaignData {
     description?: string; // Optional: Description from metadata
     image?: string;       // Optional: Image URL from metadata
     status: string;
+    mint?: string;
 }
 
 const AllCampaignsPage = () => {
@@ -151,9 +152,7 @@ const AllCampaignsPage = () => {
         router.push(`/campaign-details?id=${id}`);
     }
 
-    const visibleCampaigns = campaigns.filter((camp) => camp.totalFundRaised > 0);
-
-    const filteredCampaigns = visibleCampaigns.filter((camp) => {
+    const filteredCampaigns = campaigns.filter((camp) => {
         switch (selectedTab) {
             case 'LIVE':
                 return camp.status === 'COMPLETED';
@@ -179,10 +178,10 @@ const AllCampaignsPage = () => {
                 <div className="flex flex-col w-full min-h-screen">
                     <div className="mb-8 w-full max-w-3xl mx-auto">
                         <DashboardStats
-                            liveCount={visibleCampaigns.filter(camp => camp.status === 'COMPLETED').length}
-                            claimableCount={visibleCampaigns.filter(camp => camp.status === 'FAILED').length}
-                            raisingCount={visibleCampaigns.filter(camp => camp.status === 'RAISING').length}
-                            allCount={visibleCampaigns.length}
+                            liveCount={campaigns.filter(camp => camp.status === 'COMPLETED').length}
+                            claimableCount={campaigns.filter(camp => camp.status === 'FAILED').length}
+                            raisingCount={campaigns.filter(camp => camp.status === 'RAISING').length}
+                            allCount={campaigns.length}
                             selectedTab={selectedTab}
                             onTabChange={setSelectedTab}
                         />
@@ -190,38 +189,67 @@ const AllCampaignsPage = () => {
 
                     <div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 bg-slate-800 gap-4 py-8 w-full max-w-full px-4 rounded">
                         {filteredCampaigns.map((camp) => {
-                        return (    
-                        <div key={camp.id} className={styles['card']} onClick={() => handleCardClick(camp, camp.id)} style={{ cursor: 'pointer' }}>
+                            return (
+                            <div key={camp.id} className={styles['card']} onClick={() => handleCardClick(camp, camp.id)} style={{ cursor: 'pointer' }}>
 
-                            <div className="flex flex-col sm:flex-row items-start">
-                                {/* Token Image */}
-                                {camp.image && (
-                                <img
-                                    src={camp.image || '/path/to/placeholder.png'}
-                                    alt={`${camp.name} Token`}
-                                    className="w-40 h-40 sm:w-32 sm:h-32 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
-                                />
-                                )}
+                                <div className="flex flex-col sm:flex-row items-start overflow-hidden">
+                                    {camp.status === 'COMPLETED' ? (
+                                        <>
+                                            {camp.image && (
+                                                <img
+                                                    src={camp.image || '/path/to/placeholder.png'}
+                                                    alt={`${camp.name} Token`}
+                                                    className="w-40 h-40 sm:w-32 sm:h-32 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
+                                                />
+                                            )}
+                                
+                                            {/* Campaign Information */}
+                                            <div className="flex-1 min-w-0 mt-4 sm:mt-0 sm:ml-4">
+                                                <p className="text-lg font-bold truncate">
+                                                    {camp.name} ({camp.symbol})
+                                                </p>
+                                                <p className="text-sm mt-1 text-white text-600 overflow-hidden text-ellipsis">
+                                                    {camp.description}
+                                                </p>
+                                                <p className="text-sm mt-2">
+                                                    <strong>Trade Deadline:</strong> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
+                                                </p>
+                                                <p className="text-sm mt-1 truncate">
+                                                    <strong>Mint Address:</strong> {camp.mint}
+                                                </p>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {camp.image && (
+                                            <img
+                                                src={camp.image || '/path/to/placeholder.png'}
+                                                alt={`${camp.name} Token`}
+                                                className="w-40 h-40 sm:w-32 sm:h-32 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
+                                            />
+                                            )}
 
-                                {/* Campaign Information */}
-                                <div className="text-center sm:text-left">
-                                    <p className="text-sm">
-                                        <strong>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
-                                    </p>
-                                    <p className="text-sm">
-                                        <strong>Donation Goal:</strong> {camp.donationGoal} SOL
-                                    </p>
-                                    <p className="text-sm">
-                                        <strong>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
-                                    </p>
-                                    <p className="text-lg font-bold">
-                                        {camp.name} ({camp.symbol}): <span className='font-normal text-sm'>{camp.description}</span>
-                                    </p>
+                                            {/* Campaign Information */}
+                                            <div className="text-center sm:text-left">
+                                                <p className="text-sm">
+                                                    <strong>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
+                                                </p>
+                                                <p className="text-sm">
+                                                    <strong>Donation Goal:</strong> {camp.donationGoal} SOL
+                                                </p>
+                                                <p className="text-sm">
+                                                    <strong>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
+                                                </p>
+                                                <p className="text-lg font-bold">
+                                                    {camp.name} ({camp.symbol}): <span className='font-normal text-sm'>{camp.description}</span>
+                                                </p>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
-                        </div>
-                        );
-                        })}
+                            );
+                            })}
 
                         
                     </div>
