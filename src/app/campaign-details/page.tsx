@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import donateFund from '@/scripts/donate';
 import Image from 'next/image';
 import claimFundRaised from '@/scripts/claim-fund-raised';
+import { set } from '@metaplex-foundation/umi/serializers';
 // import { set } from '@metaplex-foundation/umi/serializers';
 // import type { CampaignData } from '@/types';
 
@@ -59,7 +60,19 @@ const CampaignContent = () => {
     const [isClosing, setIsClosing] = useState(false);
     const [donatePopupError, setDonatePopupError] = useState<string | null>(null);
 
+    const [copied, setCopied] = useState(false);
+
     const router = useRouter();
+
+    const copyToClipboard = async (text: string) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy to clipboard:', err);
+        }
+    }
 
     const handleDonateFundClick = () => {
         setShowDonateAmountPopup(true);
@@ -238,10 +251,17 @@ const CampaignContent = () => {
     };
 
     return (
-      <div className="flex justify-center items-start min-h-screen pt-10 pb-8">
+      <div className="flex justify-center items-start min-h-screen pt-10 pb-8 px-4">
         <div className="w-full max-w-4xl mx-auto">
-            <div className="bg-slate-800 rounded-xl p-8">
-                <div className="bg-transparent rounded-lg shadow-lg p-8" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
+            <div className="bg-slate-800 rounded-2xl p-6 sm:p-8 overflow-hidden">
+                <div 
+                    className="bg-transparent rounded-xl shadow-lg p-6 sm:p-8 overflow-hidden" 
+                    style={{ 
+                        border: '2px solid transparent', 
+                        borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1',
+                        borderRadius: '1rem' 
+                    }}
+                >
                     <h1 className="text-3xl font-bold text-center mb-8 text-white text-800">
                         Campaign Details
                     </h1>
@@ -262,13 +282,27 @@ const CampaignContent = () => {
                         <div className="border-b pb-6">
                             <h3 className="text-xl font-semibold mb-4 text-white text-700">Funding Status</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-slate-800 p-4" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1', borderRadius: '1rem' }}>
+                                <div 
+                                    className="bg-slate-800 p-4 rounded-xl overflow-hidden" 
+                                    style={{ 
+                                        border: '2px solid transparent', 
+                                        borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1',
+                                        borderRadius: '1rem' 
+                                    }}
+                                >
                                     <p className="text-white text-600">Total Fund Raised</p>
                                     <p className="text-2xl font-bold text-green-600">
                                         {(campaign.totalFundRaised / 1e9).toFixed(2)} SOL
                                     </p>
                                 </div>
-                                <div className="bg-slate-800 p-4" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1', borderRadius: '1rem' }}>                                    
+                                <div 
+                                    className="bg-slate-800 p-4 rounded-xl overflow-hidden" 
+                                    style={{ 
+                                        border: '2px solid transparent', 
+                                        borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1',
+                                        borderRadius: '1rem' 
+                                    }}
+                                >                                    
                                     <p className="text-white text-600">Donation Goal</p>
                                     <p className="text-2xl font-bold text-blue-600">
                                         {campaign.donationGoal.toFixed(2)} SOL
@@ -281,13 +315,27 @@ const CampaignContent = () => {
                         <div className="border-b pb-6">
                             <h3 className="text-xl font-semibold mb-4 text-white text-700">Important Dates</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div className="bg-slate-800 p-4" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1', borderRadius: '1rem' }}>                                    
+                                <div 
+                                    className="bg-slate-800 p-4 rounded-xl overflow-hidden" 
+                                    style={{ 
+                                        border: '2px solid transparent', 
+                                        borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1',
+                                        borderRadius: '1rem' 
+                                    }}
+                                >                                    
                                     <p className="text-white text-600">Deposit Deadline</p>
                                     <p className="text-lg text-white font-semibold">
                                         {new Date(campaign.depositDeadline.toNumber() * 1000).toLocaleDateString()}
                                     </p>
                                 </div>
-                                <div className="bg-slate-800 p-4" style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1', borderRadius: '1rem' }}>                                    
+                                <div 
+                                    className="bg-slate-800 p-4 rounded-xl overflow-hidden" 
+                                    style={{ 
+                                        border: '2px solid transparent', 
+                                        borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1',
+                                        borderRadius: '1rem' 
+                                    }}
+                                >                                    
                                     <p className="text-white text-600">Trade Deadline</p>
                                     <p className="text-lg text-white font-semibold">
                                         {new Date(campaign.tradeDeadline.toNumber() * 1000).toLocaleDateString()}
@@ -300,7 +348,14 @@ const CampaignContent = () => {
                         {campaign.mint && (
                             <div className="border-b pb-6">
                                 <h3 className="text-xl font-semibold mb-4 text-white text-700">Mint Address</h3>
-                                <p className="text-white text-800 whitespace-pre-wrap">{campaign.mint}</p>
+                                <div className='relative'>
+                                    <p className="text-white text-800 whitespace-pre-wrap break-all cursor-pointer hover:opacity-80" onClick={() => campaign.mint && copyToClipboard(campaign.mint)}>{campaign.mint}</p>
+                                    {copied && (
+                                        <span className="absolute left-0 -bottom-6 text-white text-sm text-400 transition-opacity duration-200">
+                                            Copied!
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                         )}
         

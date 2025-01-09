@@ -43,10 +43,10 @@ export default function RootLayout({
             <WalletModalProvider>
               <main className="relative min-h-screen min-w-full ">
                 <nav className="w-full flex justify-center items-center py-8">
-                  <div className="flex-1 flex justify-center">
+                  <div className="flex-1 flex justify-center scale-75 sm:scale-100">
                     <PrePumpfun />
                   </div>
-                  <div className="absolute top-4 right-4 flex flex-col items-end z-[100] break-words scale-90 origin-top-right">
+                  <div className="absolute top-4 right-4 flex flex-col items-end z-[100] break-words scale-50 sm:scale-90 origin-top-right">
                     <WalletMultiButton className="!px-4 !py-2 text-md" />
                     <WalletDisconnectButton className="!px-4 !py-2 text-md" />
                     <div className="scale-95">
