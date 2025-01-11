@@ -5,15 +5,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
-import { BN, AnchorProvider, Program } from '@coral-xyz/anchor';
+import { BN } from '@coral-xyz/anchor';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import DashboardStats from '../../components/dashboard-stats/DashboardStats';
-import getCampaign from '@/scripts/get-campaign';
-import { AdapterWallet } from '@/scripts/create-campaign';
-import { PrePump } from '@/scripts/idl/pre_pump';
 import MyNavigationMenu from './MyCampaignsNav';
 
 import styles from './campaigns.module.css';

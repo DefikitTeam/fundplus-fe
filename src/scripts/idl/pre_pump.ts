@@ -128,11 +128,11 @@ export type PrePump = {
       ],
       "accounts": [
         {
-          "name": "operator",
+          "name": "creator",
           "writable": true,
           "signer": true,
           "relations": [
-            "config"
+            "campaignAccount"
           ]
         },
         {
@@ -152,12 +152,6 @@ export type PrePump = {
               }
             ]
           }
-        },
-        {
-          "name": "creator",
-          "relations": [
-            "campaignAccount"
-          ]
         },
         {
           "name": "treasury",
@@ -499,12 +493,7 @@ export type PrePump = {
           "address": "SysvarRent111111111111111111111111111111111"
         }
       ],
-      "args": [
-        {
-          "name": "amount",
-          "type": "u64"
-        }
-      ]
+      "args": []
     },
     {
       "name": "createCampaign",
@@ -1352,6 +1341,107 @@ export type PrePump = {
       ]
     },
     {
+      "name": "updateClaimableAmount",
+      "discriminator": [
+        109,
+        235,
+        14,
+        185,
+        248,
+        187,
+        81,
+        3
+      ],
+      "accounts": [
+        {
+          "name": "operator",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "creator",
+          "relations": [
+            "campaignAccount"
+          ]
+        },
+        {
+          "name": "campaignAccount",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  97,
+                  109,
+                  112,
+                  97,
+                  105,
+                  103,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              },
+              {
+                "kind": "account",
+                "path": "campaign_account.index",
+                "account": "campaign"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "campaignAccount"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "withdrawFee",
       "discriminator": [
         14,
@@ -1807,6 +1897,19 @@ export type PrePump = {
         196,
         178
       ]
+    },
+    {
+      "name": "updatedClaimableTokenAmountEvent",
+      "discriminator": [
+        226,
+        222,
+        215,
+        72,
+        48,
+        40,
+        18,
+        225
+      ]
     }
   ],
   "errors": [
@@ -1954,6 +2057,10 @@ export type PrePump = {
           },
           {
             "name": "totalTokenBought",
+            "type": "u64"
+          },
+          {
+            "name": "claimableAmount",
             "type": "u64"
           },
           {
@@ -2179,6 +2286,34 @@ export type PrePump = {
           {
             "name": "bump",
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "updatedClaimableTokenAmountEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "campaignIndex",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "claimableAmount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
           }
         ]
       }

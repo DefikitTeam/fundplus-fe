@@ -11,6 +11,7 @@ import {useRouter} from "next/navigation";
 import donateFund from '@/scripts/donate';
 import Image from 'next/image';
 import claimFundRaised from '@/scripts/claim-fund-raised';
+import claimCampaignToken from '@/scripts/claim-campaign-token';
 import { set } from '@metaplex-foundation/umi/serializers';
 // import { set } from '@metaplex-foundation/umi/serializers';
 // import type { CampaignData } from '@/types';
@@ -30,6 +31,8 @@ interface CampaignData {
     campaignIndex: number;
     bnIndex: BN;
     mint?: string;
+    status: string;
+    claimableAmount?: number;
 }
 
 // Create a separate component for the campaign content
@@ -48,6 +51,11 @@ const CampaignContent = () => {
     const [canClaim, setCanClaim] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [isCreator, setIsCreator] = useState(false);
+
+    const [claimingToken, setClaimingToken] = useState(false);
+    const [claimTokenError, setClaimTokenError] = useState<string | null>(null);
+    const [claimTokenSuccess, setClaimTokenSuccess] = useState<string | null>(null);
+    const [canClaimToken, setCanClaimToken] = useState(false);
 
     const [donating, setDonating] = useState(false);
     const [donateError, setDonateError] = useState<string | null>(null);
@@ -148,6 +156,39 @@ const CampaignContent = () => {
         }
     };
 
+    const handleClaimToken = async () => {
+        if (!campaign) return;
+        if (!campaign.campaignIndex) {
+            setClaimTokenError("Campaign index is not defined");
+            return;
+        }
+
+        setClaimingToken(true);
+        setClaimTokenError(null);
+        setClaimTokenSuccess(null);
+    
+        try {
+            if (!canClaimToken) {
+                throw new Error("Campaign deposit deadline has not passed yet");
+            }
+            
+            const txSignature = await claimCampaignToken(walletContextState, new BN(campaign.campaignIndex));
+            setClaimTokenSuccess(`Transaction successful`);
+        } catch (err: any) {
+            console.error(err);
+            // Handle specific error codes
+            if (err.message.includes("CampaignDepositDeadlineNotPassed")) {
+                setClaimTokenError("Cannot claim funds yet - deposit deadline has not passed");
+            } else if (err.message.includes("CampaignAlreadyClaimed")) {
+                setClaimTokenError("Funds have already been claimed for this campaign");
+            } else {
+                setClaimTokenError(`Failed to claim funds: ${err.message}`);
+            }
+        } finally {
+            setClaimingToken(false);
+        }
+    }
+
     const handleClosePopup = () => {
         setIsClosing(true);
         setTimeout(() => {
@@ -177,13 +218,23 @@ const CampaignContent = () => {
             try {
                 // Fetch all campaigns from backend API
                 const response = await fetch('http://localhost:3000/v1/campaign');
+                const statusRes = await fetch('http://localhost:3000/v1/campaign/status');
                 if (!response.ok) {
                     throw new Error('Failed to fetch campaigns');
                 }
+                if (!statusRes.ok) {
+                    throw new Error('Failed to fetch campaign status');
+                }
                 const data = await response.json();
+                const statusData = await statusRes.json();
                 
                 // Find the specific campaign by id
                 const campaignData = data.data.find((camp: any) => camp.id === campaignId);
+
+                // Create a map for quick status lookup
+                const statusMap = new Map(
+                    statusData.data.map((item: any) => [`${item.creator}-${item.campaignIndex}`, item.status])
+                );
                 if (!campaignData) {
                     throw new Error('Campaign not found');
                 }
@@ -204,6 +255,7 @@ const CampaignContent = () => {
                 // Convert timestamp fields to BN objects for compatibility
                 setCampaign({
                     ...campaignData,
+                    status: statusMap.get(`${campaignData.creator}-${campaignData.campaignIndex}`) || 'UNKNOWN',
                     depositDeadline: new BN(campaignData.depositDeadline),
                     tradeDeadline: new BN(campaignData.tradeDeadline),
                     description: (metadata as any).description || '',
@@ -218,6 +270,44 @@ const CampaignContent = () => {
     
         fetchCampaignDetails();
     }, [campaignId]);
+
+    const fetchTokenStatus = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/v1/campaign/token-status');
+            if (!response.ok) throw new Error('Failed to fetch token status');
+            const data = await response.json();
+            
+            // Update campaign with claimable amount
+            if (campaign && campaign.status === 'COMPLETED') {
+                const tokenStatus = data.data.find((status: any) => 
+                    status.creator === campaign.creator && 
+                    status.campaignIndex === campaign.campaignIndex
+                );
+                setCampaign(prev => {
+                    if (!prev) return null;
+                    return {
+                        ...prev,
+                        claimableAmount: tokenStatus?.claimable_amount || 0
+                    } as CampaignData;
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching token status:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (campaign?.status === 'COMPLETED') {
+            fetchTokenStatus();
+        }
+    }, [campaign?.status]);
+
+    useEffect(() => {
+        if (campaign) {
+            const validClaimTokenAmount = Boolean(campaign.claimableAmount && campaign.claimableAmount > 0);
+            setCanClaimToken(validClaimTokenAmount);
+        }
+    }, [campaign])
 
     useEffect(() => {
         if (campaign) {
@@ -249,6 +339,7 @@ const CampaignContent = () => {
         </div>
       )
     };
+
 
     return (
       <div className="flex justify-center items-start min-h-screen pt-10 pb-8 px-4">
@@ -386,6 +477,41 @@ const CampaignContent = () => {
                                 </div>
                             </div>
                         )}
+
+                        {/* Claimable Token Amount */}
+                        <div className="relative inline-block group">
+                            {isCreator && campaign.status === 'COMPLETED' && (
+                                <div className="border-b pb-6">
+                                    <h3 className="text-xl font-semibold mb-4 text-white text-700">Claimable Token Amount</h3>
+                                    <div className='relative'>
+                                        <p className="text-white text-800 whitespace-pre-wrap break-all">
+                                            {campaign.claimableAmount || 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                            {isCreator && (
+                                <div className="relative group">
+                                    <button
+                                        onClick={handleClaimToken}
+                                        disabled={claimingToken || !canClaimToken}
+                                        className={`font-bold py-2 px-4 rounded ${
+                                            canClaimToken
+                                            ? 'bg-green-500 hover:bg-green-700 text-white cursor-pointer'
+                                            : 'bg-gray-400 text-gray-700 cursor-not-allowed'
+                                        }`}
+                                    >
+                                        {claimingToken ? 'Claiming...' : 'Claim Token'}
+                                    </button>
+                                    {!canClaimToken && (
+                                        <div className="absolute invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 bottom-full mb-4 px-4 py-3 text-sm text-white bg-gray-900 rounded-lg max-w-[300px] break-words">
+                                            You can only claim tokens after reaching the required Market Cap, for details on Market Cap, look up tokens using the Mint Address we provided
+                                            <div className="absolute top-full -mt-2 border-4 border-transparent border-t-gray-900"></div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                     <div className="flex justify-center items-center w-full">
                      <div className="relative inline-block group">
                        {isCreator && (
