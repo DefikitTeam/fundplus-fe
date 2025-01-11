@@ -113,7 +113,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                         </Link>
                     </li>
                     <li>
-                        <Link href="/all-campaigns" className="relative group">
+                        <Link href="/my-campaigns" className="relative group">
                             <span className={`${styles['nav-link']} text-center ${activeLink === 'my-campaigns' ? styles['active'] : ''}`}>MY CAMPAIGN</span>
                             <div className="invisible group-hover:visible text-center absolute z-10 w-64 px-4 py-2 mb-2 text-sm text-white bg-gray-900 rounded-md shadow-lg -right-2 bottom-full transform -translate-x-1/2 left-1/2">
                                 <div className="absolute -bottom-1 left-1/2 right-3 w-2 h-2 bg-gray-900 transform rotate-45 -translate-x-1/2" />
@@ -199,7 +199,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                     </Link>
                 </li>
                 <li>
-                    <Link href="/all-campaigns" className="relative group">
+                    <Link href="/my-campaigns" className="relative group">
                         <span className={`${styles['nav-link']} text-center ${activeLink === 'my-campaigns' ? styles['active'] : ''}`}>MY CAMPAIGN</span>
                         <div className="invisible group-hover:visible text-center absolute z-10 w-64 px-4 py-2 mb-2 text-sm text-white bg-gray-900 rounded-md shadow-lg -right-2 bottom-full transform -translate-x-1/2 left-1/2">
                             <div className="absolute -bottom-1 left-1/2 right-3 w-2 h-2 bg-gray-900 transform rotate-45 -translate-x-1/2" />

@@ -6,7 +6,7 @@ interface PrePumpfunProps {
     text?: string;
 }
 
-const PrePumpfun: React.FC<PrePumpfunProps> = ({ text = 'Pre-Pumpfun' }) => {
+const PrePumpfun: React.FC<PrePumpfunProps> = ({ text = 'FundPlus' }) => {
     const router = useRouter();
 
     const handleClick = () => {
