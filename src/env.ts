@@ -25,10 +25,10 @@ export const isProd = process.env.NODE_ENV === 'production';
 export const getConfigs = () => {
     return {
         api: {
-            campaign: NEXT_PUBLIC_CAMPAIGN_ENDPOINT || 'http://localhost:3000/v1/campaign',
-            status: NEXT_PUBLIC_STATUS_ENDPOINT || 'http://localhost:3000/v1/campaign/status',
-            upload: NEXT_PUBLIC_UPLOAD_ENDPOINT || 'http://localhost:3000/v1/campaign/upload',
-            token: NEXT_PUBLIC_TOKEN_ENDPOINT || 'http://localhost:3000/v1/campaign/token-status'
+            campaign: NEXT_PUBLIC_CAMPAIGN_ENDPOINT || 'https://prepump-stg-api.fundplus.org/v1/campaign',
+            status: NEXT_PUBLIC_STATUS_ENDPOINT || 'https://prepump-stg-api.fundplus.org/v1/campaign/status',
+            upload: NEXT_PUBLIC_UPLOAD_ENDPOINT || 'https://prepump-stg-api.fundplus.org/v1/campaign/upload',
+            token: NEXT_PUBLIC_TOKEN_ENDPOINT || 'https://prepump-stg-api.fundplus.org/v1/campaign/token-status'
         },
         environment: {
             isDev,
