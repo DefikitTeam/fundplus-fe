@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { BN } from '@coral-xyz/anchor';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { configs } from '@/env';
 
 import NavigationMenu from '../../components/navigation-menu/NavigationMenu';
 import DashboardStats from '../../components/dashboard-stats/DashboardStats';
@@ -41,8 +42,8 @@ const HomePage: React.FC = () => {
     const fetchCampaigns = async () => {
         try {
             const [campaignsResponse, statusResponse] = await Promise.all([
-                fetch('http://localhost:3000/v1/campaign'),
-                fetch('http://localhost:3000/v1/campaign/status')
+                fetch(configs.api.campaign),
+                fetch(configs.api.status)
             ]);
     
             if (!campaignsResponse.ok || !statusResponse.ok) {

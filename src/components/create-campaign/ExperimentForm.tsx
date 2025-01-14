@@ -14,6 +14,7 @@ import ImageUploadField from './UploadImage';
 import { NFTStorage, File } from 'nft.storage';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { configs } from '@/env';
 
 interface ExperimentFormProps {
     onClose: () => void;
@@ -56,7 +57,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
             form.append('name', formData.name);
             form.append('description', formData.uri);
     
-            const response = await fetch('http://localhost:3000/v1/campaign/upload', {
+            const response = await fetch(configs.api.upload, {
                 method: 'POST',
                 body: form
             });

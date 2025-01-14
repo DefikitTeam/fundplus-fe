@@ -8,6 +8,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { BN } from '@coral-xyz/anchor';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { configs } from '@/env';
 
 import DashboardStats from '../../components/dashboard-stats/DashboardStats';
 import MyNavigationMenu from './MyCampaignsNav';
@@ -48,8 +49,8 @@ const AllCampaignsPage = () => {
     const fetchMyCampaigns = async () => {
         try {
             const [response, statusResponse] = await Promise.all([
-                fetch('http://localhost:3000/v1/campaign'),
-                fetch('http://localhost:3000/v1/campaign/status')
+                fetch(configs.api.campaign),
+                fetch(configs.api.status)
             ]);
     
             if (!response.ok || !statusResponse.ok) {

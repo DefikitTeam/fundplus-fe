@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
@@ -13,6 +14,8 @@ import Image from 'next/image';
 import claimFundRaised from '@/scripts/claim-fund-raised';
 import claimCampaignToken from '@/scripts/claim-campaign-token';
 import { set } from '@metaplex-foundation/umi/serializers';
+import { configs } from '@/env';
+require('dotenv').config();
 // import { set } from '@metaplex-foundation/umi/serializers';
 // import type { CampaignData } from '@/types';
 
@@ -33,6 +36,7 @@ interface CampaignData {
     mint?: string;
     status: string;
     claimableAmount?: number;
+    marketCap?: number;
 }
 
 // Create a separate component for the campaign content
@@ -216,9 +220,8 @@ const CampaignContent = () => {
             if (!campaignId) return;
             
             try {
-                // Fetch all campaigns from backend API
-                const response = await fetch('http://localhost:3000/v1/campaign');
-                const statusRes = await fetch('http://localhost:3000/v1/campaign/status');
+                const response = await fetch(configs.api.campaign);
+                const statusRes = await fetch(configs.api.status);
                 if (!response.ok) {
                     throw new Error('Failed to fetch campaigns');
                 }
@@ -273,7 +276,7 @@ const CampaignContent = () => {
 
     const fetchTokenStatus = async () => {
         try {
-            const response = await fetch('http://localhost:3000/v1/campaign/token-status');
+            const response = await fetch(configs.api.token);
             if (!response.ok) throw new Error('Failed to fetch token status');
             const data = await response.json();
             
@@ -287,7 +290,8 @@ const CampaignContent = () => {
                     if (!prev) return null;
                     return {
                         ...prev,
-                        claimableAmount: tokenStatus?.claimable_amount || 0
+                        claimableAmount: tokenStatus?.claimable_amount || 0,
+                        marketCap: tokenStatus?.market_cap || 0,
                     } as CampaignData;
                 });
             }
@@ -478,6 +482,20 @@ const CampaignContent = () => {
                             </div>
                         )}
 
+                        {/* Market Cap Number */}
+                        <div className='relative inline-block group'>
+                            {campaign.status === 'COMPLETED' && (
+                                <div className="border-b pb-6">
+                                    <h3 className="text-xl font-semibold mb-4 text-white text-700">Market Cap</h3>
+                                    <div className='relative'>
+                                        <p className="text-white text-800 whitespace-pre-wrap break-all">
+                                            {campaign.marketCap || 0}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
                         {/* Claimable Token Amount */}
                         <div className="relative inline-block group">
                             {isCreator && campaign.status === 'COMPLETED' && (
@@ -512,9 +530,17 @@ const CampaignContent = () => {
                                 </div>
                             )}
                         </div>
+                        {claimTokenError && (
+                            <p className="mt-2 text-red-500">{claimTokenError}</p>
+                        )}
+                        {claimTokenSuccess && (
+                            <p className="mt-2 text-green-500">{claimTokenSuccess}</p>
+                        )}
+
+                        {/* Claim Funds */}
                     <div className="flex justify-center items-center w-full">
                      <div className="relative inline-block group">
-                       {isCreator && (
+                       {isCreator && campaign.status !== 'COMPLETED' && (
                             <button
                                 onClick={handleClaimFund}
                                 disabled={claiming || !canClaim}
