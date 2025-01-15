@@ -24,8 +24,8 @@ interface CampaignData {
     uri: string;
     totalFundRaised: number;
     donationGoal: number;
-    depositDeadline: BN;
-    tradeDeadline: BN;
+    depositDeadline: number;
+    tradeDeadline: number;
     timestamp: number;
     description?: string; // Optional: Description from metadata
     image?: string;       // Optional: Image URL from metadata
@@ -96,7 +96,7 @@ const AllCampaignsPage = () => {
                         return {
                             ...camp,
                             description: 'No description available.',
-                            image: '/path/to/placeholder.png', // Replace with your placeholder image path
+                            image: '/unknown.svg', // Replace with your placeholder image path
                             status: statusMap.get(`${camp.creator}-${camp.campaignIndex}`) || 'UNKNOWN'
                         };
                     }
@@ -206,7 +206,7 @@ const AllCampaignsPage = () => {
                                         <>
                                             {camp.image && (
                                                 <img
-                                                    src={camp.image || '/path/to/placeholder.png'}
+                                                    src={camp.image || '/unknown.svg'}
                                                     alt={`${camp.name} Token`}
                                                     className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
                                                 />
@@ -221,7 +221,7 @@ const AllCampaignsPage = () => {
                                                     {camp.description}
                                                 </p>
                                                 <p className="text-sm mt-2">
-                                                    <strong>Trade Deadline:</strong> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
+                                                <strong>Trade Deadline:</strong> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
                                                 </p>
                                                 <div className="text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
                                                     <strong className="flex-shrink-0 whitespace-nowrap">Mint Address:&nbsp;</strong>
@@ -235,7 +235,7 @@ const AllCampaignsPage = () => {
                                         <>
                                             {camp.image && (
                                             <img
-                                                src={camp.image || '/path/to/placeholder.png'}
+                                                src={camp.image || '/unknown.svg'}
                                                 alt={`${camp.name} Token`}
                                                 className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
                                             />

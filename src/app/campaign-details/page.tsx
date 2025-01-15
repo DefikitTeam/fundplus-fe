@@ -24,8 +24,8 @@ interface CampaignData {
     creator: string;
     name: string;
     symbol: string;
-    depositDeadline: BN;
-    tradeDeadline: BN;
+    depositDeadline: number;
+    tradeDeadline: number;
     totalFundRaised: number;
     donationGoal: number;
     uri: string;
@@ -60,6 +60,7 @@ const CampaignContent = () => {
     const [claimTokenError, setClaimTokenError] = useState<string | null>(null);
     const [claimTokenSuccess, setClaimTokenSuccess] = useState<string | null>(null);
     const [canClaimToken, setCanClaimToken] = useState(false);
+    const [showClaimPopup, setShowClaimPopup] = useState(false);
 
     const [donating, setDonating] = useState(false);
     const [donateError, setDonateError] = useState<string | null>(null);
@@ -109,7 +110,7 @@ const CampaignContent = () => {
         setDonateSuccess(null);
     
         try {
-            const txSignature = await donateFund(walletContextState, new BN(campaign.campaignIndex), donationAmount, campaign.creator);
+            const txSignature = await donateFund(walletContextState, campaign.campaignIndex, donationAmount, campaign.creator);
             setDonateSuccess(`Transaction successful: ${txSignature}`);
             setShowDonatePopup(true);
         } catch (err: any) {
@@ -128,7 +129,8 @@ const CampaignContent = () => {
 
     const handleClaimFund = async () => {
         if (!campaign) return;
-        if (!campaign.campaignIndex) {
+        console.log(campaign.campaignIndex)
+        if (campaign.campaignIndex === undefined) {
             setClaimError("Campaign index is not defined");
             return;
         }
@@ -162,7 +164,7 @@ const CampaignContent = () => {
 
     const handleClaimToken = async () => {
         if (!campaign) return;
-        if (!campaign.campaignIndex) {
+        if (campaign.campaignIndex === undefined) {
             setClaimTokenError("Campaign index is not defined");
             return;
         }
@@ -178,6 +180,7 @@ const CampaignContent = () => {
             
             const txSignature = await claimCampaignToken(walletContextState, new BN(campaign.campaignIndex));
             setClaimTokenSuccess(`Transaction successful`);
+            setShowClaimPopup(true);
         } catch (err: any) {
             console.error(err);
             // Handle specific error codes
@@ -209,6 +212,13 @@ const CampaignContent = () => {
         }, 15000);
     }
 
+    const handleCloseClaimPopup = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            setShowClaimPopup(false);
+        }, 15000);
+    }
+
     useEffect(() => {
         if (campaign && publicKey) {
             setIsCreator(campaign.creator === publicKey.toString());
@@ -228,11 +238,14 @@ const CampaignContent = () => {
                 if (!statusRes.ok) {
                     throw new Error('Failed to fetch campaign status');
                 }
+
+                
                 const data = await response.json();
                 const statusData = await statusRes.json();
                 
                 // Find the specific campaign by id
                 const campaignData = data.data.find((camp: any) => camp.id === campaignId);
+                console.log('Found Campaign:', campaignData);
 
                 // Create a map for quick status lookup
                 const statusMap = new Map(
@@ -259,8 +272,6 @@ const CampaignContent = () => {
                 setCampaign({
                     ...campaignData,
                     status: statusMap.get(`${campaignData.creator}-${campaignData.campaignIndex}`) || 'UNKNOWN',
-                    depositDeadline: new BN(campaignData.depositDeadline),
-                    tradeDeadline: new BN(campaignData.tradeDeadline),
                     description: (metadata as any).description || '',
                     image: (metadata as any).image || '',
                 });
@@ -316,7 +327,7 @@ const CampaignContent = () => {
     useEffect(() => {
         if (campaign) {
             const currentTimestamp = Math.floor(Date.now() / 1000);
-            const hasDepositPassed = campaign.depositDeadline.toNumber() < currentTimestamp;
+            const hasDepositPassed = campaign.depositDeadline < currentTimestamp;
             const donationReached = Number((campaign.totalFundRaised / 1e9).toFixed(2)) >= campaign.donationGoal;
             setCanClaim(hasDepositPassed && !donationReached);
             setCanDonate(!hasDepositPassed);
@@ -420,7 +431,7 @@ const CampaignContent = () => {
                                 >                                    
                                     <p className="text-white text-600">Deposit Deadline</p>
                                     <p className="text-lg text-white font-semibold">
-                                        {new Date(campaign.depositDeadline.toNumber() * 1000).toLocaleDateString()}
+                                        {new Date(campaign.depositDeadline * 1000).toLocaleDateString()}
                                     </p>
                                 </div>
                                 <div 
@@ -433,7 +444,7 @@ const CampaignContent = () => {
                                 >                                    
                                     <p className="text-white text-600">Trade Deadline</p>
                                     <p className="text-lg text-white font-semibold">
-                                        {new Date(campaign.tradeDeadline.toNumber() * 1000).toLocaleDateString()}
+                                        {new Date(campaign.tradeDeadline * 1000).toLocaleDateString()}
                                     </p>
                                 </div>
                             </div>
@@ -475,7 +486,7 @@ const CampaignContent = () => {
                                         className="w-full h-full object-cover"
                                         unoptimized={campaign.image.startsWith('https://gateway.pinata.cloud')} // Skip optimization for IPFS images
                                         onError={(e) => {
-                                            e.currentTarget.src = '/path/to/placeholder.png';
+                                            e.currentTarget.src = '/unknown.svg';
                                         }}
                                     />
                                 </div>
@@ -508,7 +519,7 @@ const CampaignContent = () => {
                                     </div>
                                 </div>
                             )}
-                            {isCreator && (
+                            {isCreator && campaign.status === 'COMPLETED' && (
                                 <div className="relative group">
                                     <button
                                         onClick={handleClaimToken}
@@ -678,6 +689,28 @@ const CampaignContent = () => {
                                 OK
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {showClaimPopup && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 className="text-2xl font-bold mb-4">Claim Successful</h2>
+                        {isClosing ? (
+                            <div className="flex items-center gap-3 mb-4">
+                                <Loader2 className="h-5 w-5 animate-spin" />
+                                <p>Please wait a moment...</p>
+                            </div>
+                        ) : (
+                            <p className="mb-4">{claimSuccess}</p>
+                        )}
+                        <button
+                            onClick={handleCloseClaimPopup}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            disabled={isClosing}
+                        >
+                            OK
+                        </button>
                     </div>
                 </div>
             )}

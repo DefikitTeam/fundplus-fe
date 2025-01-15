@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/app/all-campaigns/page.tsx
 'use client';
@@ -21,8 +22,8 @@ interface CampaignData {
     uri: string;
     totalFundRaised: number;
     donationGoal: number;
-    depositDeadline: BN;
-    tradeDeadline: BN;
+    depositDeadline: number;
+    tradeDeadline: number;
     timestamp: number;
     description?: string; // Optional: Description from metadata
     image?: string;  // Optional: Image URL from metadata 
@@ -68,7 +69,7 @@ const HomePage: React.FC = () => {
                             return {
                               ...camp,
                               description: 'No description available.',
-                              image: '/path/to/placeholder.png',
+                              image: '/unknown.svg',
                               status: statusMap.get(`${camp.creator}-${camp.campaignIndex}`) || 'UNKNOWN'
                             };
                         }
@@ -80,7 +81,7 @@ const HomePage: React.FC = () => {
                         return {
                             ...camp,
                             description: metadata.description || 'No description available.',
-                            image: metadata.image || '/path/to/placeholder.png',
+                            image: metadata.image || '/unknown.svg',
                             status: status
                         };
                     } catch (metadataError) {
@@ -88,7 +89,7 @@ const HomePage: React.FC = () => {
                         return {
                             ...camp,
                             description: 'No description available.',
-                            image: '/path/to/placeholder.png',
+                            image: '/unknown.svg',
                             status: statusMap.get(`${camp.creator}-${camp.campaignIndex}`) || 'UNKNOWN'
                         };
                     }
@@ -139,14 +140,6 @@ const HomePage: React.FC = () => {
         );
     }
 
-    if (error) {
-        return (
-            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2">
-                <span className="text-2xl font-semibold text-red-600">{error}</span>
-            </div>
-        );
-    }
-
     return (
         <div className={`min-h-screen min-w-full`}>
             <div className={`${styles['app-container']} flex flex-col items-center min-h-screen min-w-full py-8 px-16 relative z-0`}>
@@ -184,7 +177,7 @@ const HomePage: React.FC = () => {
                                     <>
                                         {camp.image && (
                                             <img
-                                                src={camp.image || '/path/to/placeholder.png'}
+                                                src={camp.image || '/unknown.svg'}
                                                 alt={`${camp.name} Token`}
                                                 className="w-32 h-32 object-cover rounded flex-shrink-0"
                                             />
@@ -213,7 +206,7 @@ const HomePage: React.FC = () => {
                                     <>
                                         {camp.image && (
                                         <img
-                                            src={camp.image || '/path/to/placeholder.png'}
+                                            src={camp.image || '/unknown.svg'}
                                             alt={`${camp.name} Token`}
                                             className="w-40 h-40 sm:w-32 sm:h-32 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
                                         />

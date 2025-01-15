@@ -188,9 +188,9 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                 campaignTokenName: formData.name,
                 campaignTokenSymbol: formData.symbol,
                 uri: metadataUri,
-                depositDeadline: depositDeadlineTimestamp,
-                tradeDeadline: tradeDeadlineTimestamp,
-                donationGoal: new BN(Number(formData.donationGoal) * LAMPORTS_PER_SOL),
+                depositDeadline: depositDeadlineTimestamp ? depositDeadlineTimestamp.toNumber() : 0,
+                tradeDeadline: tradeDeadlineTimestamp.toNumber(),
+                donationGoal: Number(formData.donationGoal) * LAMPORTS_PER_SOL,
                 walletAdapter: wallet?.adapter,
                 publicKey: publicKey
             });

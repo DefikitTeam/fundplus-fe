@@ -82,9 +82,9 @@ async function createCampaign(params: CreateCampaignParams): Promise<BN> {
   const campaignTokenName = params.campaignTokenName;
   const campaignTokenSymbol = params.campaignTokenSymbol;
   const campaignTokenUri = params.uri;
-  const depositDeadline = params.depositDeadline;
-  const tradeDeadline = params.tradeDeadline;
-  const donationGoal = params.donationGoal;
+  const depositDeadline = new BN(params.depositDeadline);
+  const tradeDeadline = new BN(params.tradeDeadline);
+  const donationGoal = new BN(params.donationGoal);
   tx.add(await program.methods.createCampaign(
     campaignBump,
     campaignTokenName,

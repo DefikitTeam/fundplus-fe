@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './NavigationMenu.module.css';
 import HowItWorksModal from '../modals/HowItWorksModal';
-import { FaTelegramPlane } from "react-icons/fa";
+import { BsTwitterX } from "react-icons/bs";
 
 interface NavigationMenuProps {
     selectedTab: 'LIVE' | 'CLAIMABLE' | 'RAISING' | 'ALL';
@@ -46,7 +46,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
 
     const handleTelegramClick = () => {
         setActiveLink('telegram');
-        window.open('https://wheelofnames.com/', '_blank');
+        window.open('https://x.com/pre_pumpfun', '_blank');
         setActiveLink('');
     };
 
@@ -74,7 +74,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     <li>
                         <div className='relative group'>
-                            <FaTelegramPlane color={'#24A1DE'} />
+                            <BsTwitterX />
                             <Link href="/" legacyBehavior>
                                 <a
                                     className={`${styles['nav-link']} text-center ${activeLink === 'telegram' ? styles['active'] : ''}`}
@@ -165,14 +165,14 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                 <ul className="menu menu-horizontal px-1">
                 <li>
                     <div className='relative group'>
-                        <FaTelegramPlane color={'#24A1DE'} />
+                        <BsTwitterX />
                         <Link href="/" legacyBehavior>
                             <a
                                 className={`${styles['nav-link']} text-center ${activeLink === 'telegram' ? styles['active'] : ''}`}
                                 onClick={handleTelegramClick}
                                 aria-label="Join on Telegram"
                             >
-                                JOIN ON TELEGRAM
+                                VISIT OUR SOCIAL MEDIA
                             </a>
                         </Link>
                     </div>
