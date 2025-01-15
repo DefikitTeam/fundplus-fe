@@ -46,7 +46,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
 
     const handleTelegramClick = () => {
         setActiveLink('telegram');
-        window.open('https://x.com/pre_pumpfun', '_blank');
+        window.open('https://x.com/FundPlusDotOrg', '_blank');
         setActiveLink('');
     };
 
