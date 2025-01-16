@@ -81,7 +81,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                                     onClick={handleTelegramClick}
                                     aria-label="Join on Telegram"
                                 >
-                                    JOIN ON TELEGRAM
+                                    VISIT OUR SOCIAL MEDIA
                                 </a>
                             </Link>
                         </div>
