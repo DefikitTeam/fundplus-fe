@@ -220,7 +220,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="text"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
+                        className="w-full p-2 border rounded text-black bg-white dark:white"
                         required
                     />
                     {isSubmitted && formData.name.trim() === '' && (
@@ -274,13 +274,17 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         }
                         tooltip="The final timestamp by which donators must contribute SOL for the fundraising campaign. Funds must be received before this deadline for the campaign to proceed"
                     />
+                    <div className="date-input-container">
                     <input
-                        name="depositDeadline"
                         type="date"
+                        name="depositDeadline"
                         value={formData.depositDeadline}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
+                        className="w-full p-2 border rounded text-black bg-white dark:bg-white dark:text-black"
+                        style={{ colorScheme: 'light' }}
+                        required
                     />
+                    </div>
                     {errors.depositDeadline && (
                         <p className="text-red-500 text-sm mt-1">{errors.depositDeadline}</p>
                     )}
@@ -303,6 +307,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         value={formData.tradeDeadline}
                         onChange={handleChange}
                         className="w-full p-2 border rounded text-black bg-white dark:bg-white"
+                        style={{ colorScheme: 'light' }}
                         required
                     />
                     {errors.tradeDeadline && (

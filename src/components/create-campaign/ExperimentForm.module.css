@@ -29,3 +29,21 @@
     color: #000 !important;
     -webkit-text-fill-color: #000 !important;
 }
+
+/* Style for the date input container to ensure white background */
+.date-input-container {
+    background-color: white !important;
+    border-radius: 0.375rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    .input[type="date"] {
+        color-scheme: light;
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    .input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0) saturate(0) brightness(0) !important;
+    }
+}
