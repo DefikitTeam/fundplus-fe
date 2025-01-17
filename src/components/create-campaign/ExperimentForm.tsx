@@ -143,6 +143,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
         setIsSubmitted(true);
         if (!connected || !publicKey) {
             alert('Please connect your wallet first');
+            setIsSubmitted(false)
             return;
         }
 
@@ -150,6 +151,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
 
             if (!uploadedImage) {
                 alert('Please upload an image first');
+                setIsSubmitted(false);
                 return;
             }
             const metadataUri = await uploadToIPFS(uploadedImage);
@@ -220,7 +222,8 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="text"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black bg-white dark:white"
+                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
+                        style={{ colorScheme: 'light' }}
                         required
                     />
                     {isSubmitted && formData.name.trim() === '' && (
@@ -237,6 +240,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         value={formData.symbol}
                         onChange={handleChange}
                         className="w-full p-2 border rounded text-black bg-white dark:bg-white"
+                        style={{ colorScheme: 'light' }}
                         required
                     />
                 </div>
@@ -325,6 +329,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         value={formData.donationGoal}
                         onChange={handleChange}
                         className="w-full p-2 border rounded text-black bg-white dark:bg-white"
+                        style={{ colorScheme: 'light' }}
                         required
                     />
                 </div>

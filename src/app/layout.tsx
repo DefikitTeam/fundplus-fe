@@ -46,7 +46,7 @@ export default function RootLayout({
                     <PrePumpfun />
                   </div>
 
-                  <div className="absolute top-4 right-4 flex flex-col items-end z-[100] break-words scale-50 sm:scale-90 origin-top-right">
+                  <div className="absolute top-4 right-4 flex flex-col items-end break-words scale-50 sm:scale-90 origin-top-right">
                     <WalletMultiButton className="!px-4 !py-2 text-md" />
                     <WalletDisconnectButton className="!px-4 !py-2 text-md" />
                     <div className="scale-95">
