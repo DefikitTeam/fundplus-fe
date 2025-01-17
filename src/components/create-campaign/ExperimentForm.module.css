@@ -23,3 +23,9 @@
     -webkit-background-clip: text;
     color: transparent;
 }
+
+.input[type="text"] {
+    background-color: #fff !important;
+    color: #000 !important;
+    -webkit-text-fill-color: #000 !important;
+}

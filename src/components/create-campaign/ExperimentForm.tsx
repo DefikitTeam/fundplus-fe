@@ -220,7 +220,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="text"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black"
+                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
                         required
                     />
                     {isSubmitted && formData.name.trim() === '' && (
@@ -236,7 +236,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="text"
                         value={formData.symbol}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black"
+                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
                         required
                     />
                 </div>
@@ -247,7 +247,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         name="uri"
                         value={formData.uri}
                         onChange={handleChange}
-                        className="w-full h-32 p-2 border rounded text-black"
+                        className="w-full h-32 p-2 border rounded text-black bg-white dark:bg-white"
                     />
                 </div>
 
@@ -279,7 +279,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="date"
                         value={formData.depositDeadline}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black"
+                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
                     />
                     {errors.depositDeadline && (
                         <p className="text-red-500 text-sm mt-1">{errors.depositDeadline}</p>
@@ -302,7 +302,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="date"
                         value={formData.tradeDeadline}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black"
+                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
                         required
                     />
                     {errors.tradeDeadline && (
@@ -319,7 +319,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         step="0.1"
                         value={formData.donationGoal}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black"
+                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
                         required
                     />
                 </div>
