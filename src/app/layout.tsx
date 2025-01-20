@@ -12,6 +12,7 @@ import { WalletModalProvider, WalletMultiButton, WalletDisconnectButton } from "
 
 import '@solana/wallet-adapter-react-ui/styles.css';
 import PrePumpfun from "@/components/pre-pump-logo/PrePumpfun";
+import BackToTop from "@/components/back-to-top/BackToTop";
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
             <WalletModalProvider>
               <main className="relative min-h-screen min-w-full ">
                 <nav className="w-full flex justify-center items-center py-8">
+                  <BackToTop />
                   <div className="flex-1 flex justify-center scale-75 sm:scale-100">
                     <PrePumpfun />
                   </div>
