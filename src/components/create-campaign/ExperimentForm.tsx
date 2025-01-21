@@ -211,11 +211,9 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
     return (
         <div className="flex flex-col w-full min-h-screen"> 
 
-        <div className="w-full flex justify-center mb-6">
-            <div className="w-full max-w-2xl">
-                <FormNav />
-            </div>
-        </div>
+        <nav className="left-1/2 translate-x-1/2 top-0 z-10 mb-8 w-full max-w-2xl">
+            <FormNav />
+        </nav>
 
         <div className={styles['form-container']}>
 
