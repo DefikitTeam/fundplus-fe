@@ -39,6 +39,11 @@ interface CampaignData {
     marketCap?: number;
 }
 
+interface APIResponse {
+    data: CampaignData;
+    message: string;
+}
+
 // Create a separate component for the campaign content
 const CampaignContent = () => {
     const searchParams = useSearchParams();
@@ -229,93 +234,27 @@ const CampaignContent = () => {
         const fetchCampaignDetails = async () => {
             if (!campaignId) return;
             
+            setLoading(true);
             try {
-                const response = await fetch(configs.api.campaign);
-                const statusRes = await fetch(configs.api.status);
+                const response = await fetch(`${configs.api.campaign}/details/${campaignId}`);
+                
                 if (!response.ok) {
-                    throw new Error('Failed to fetch campaigns');
-                }
-                if (!statusRes.ok) {
-                    throw new Error('Failed to fetch campaign status');
+                    throw new Error('Failed to fetch campaign details');
                 }
 
-                
-                const data = await response.json();
-                const statusData = await statusRes.json();
-                
-                // Find the specific campaign by id
-                const campaignData = data.data.find((camp: any) => camp.id === campaignId);
-                console.log('Found Campaign:', campaignData);
+                const result: APIResponse = await response.json();
+                setCampaign(result.data);
 
-                // Create a map for quick status lookup
-                const statusMap = new Map(
-                    statusData.data.map((item: any) => [`${item.creator}-${item.campaignIndex}`, item.status])
-                );
-                if (!campaignData) {
-                    throw new Error('Campaign not found');
-                }
-    
-                // Fetch metadata from URI
-                let metadata = {};
-                if (campaignData.uri) {
-                    try {
-                        const metadataResponse = await fetch(campaignData.uri);
-                        if (metadataResponse.ok) {
-                            metadata = await metadataResponse.json();
-                        }
-                    } catch (error) {
-                        console.error('Error fetching metadata:', error);
-                    }
-                }
-    
-                // Convert timestamp fields to BN objects for compatibility
-                setCampaign({
-                    ...campaignData,
-                    status: statusMap.get(`${campaignData.creator}-${campaignData.campaignIndex}`) || 'UNKNOWN',
-                    description: (metadata as any).description || '',
-                    image: (metadata as any).image || '',
-                });
             } catch (error) {
-                console.error('Error fetching campaign:', error);
+                console.error('Error fetching campaign details:', error);
+                // setError(error instanceof Error ? error.message : 'Failed to fetch campaign details');
             } finally {
                 setLoading(false);
             }
         };
-    
+
         fetchCampaignDetails();
     }, [campaignId]);
-
-    const fetchTokenStatus = async () => {
-        try {
-            const response = await fetch(configs.api.token);
-            if (!response.ok) throw new Error('Failed to fetch token status');
-            const data = await response.json();
-            
-            // Update campaign with claimable amount
-            if (campaign && campaign.status === 'COMPLETED') {
-                const tokenStatus = data.data.find((status: any) => 
-                    status.creator === campaign.creator && 
-                    status.campaignIndex === campaign.campaignIndex
-                );
-                setCampaign(prev => {
-                    if (!prev) return null;
-                    return {
-                        ...prev,
-                        claimableAmount: tokenStatus?.claimable_amount || 0,
-                        marketCap: tokenStatus?.market_cap || 0,
-                    } as CampaignData;
-                });
-            }
-        } catch (error) {
-            console.error('Error fetching token status:', error);
-        }
-    };
-
-    useEffect(() => {
-        if (campaign?.status === 'COMPLETED') {
-            fetchTokenStatus();
-        }
-    }, [campaign?.status]);
 
     useEffect(() => {
         if (campaign) {
