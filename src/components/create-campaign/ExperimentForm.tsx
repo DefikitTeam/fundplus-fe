@@ -15,6 +15,7 @@ import { NFTStorage, File } from 'nft.storage';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { configs } from '@/env';
+import FormNav from './FormNav';
 
 interface ExperimentFormProps {
     onClose: () => void;
@@ -208,6 +209,14 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
     };
 
     return (
+        <div className="flex flex-col w-full min-h-screen"> 
+
+        <div className="w-full flex justify-center mb-6">
+            <div className="w-full max-w-2xl">
+                <FormNav />
+            </div>
+        </div>
+
         <div className={styles['form-container']}>
 
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
@@ -378,6 +387,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                     </div>
                 </div>
             )}
+        </div>
         </div>
     );
 };
