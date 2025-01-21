@@ -133,15 +133,17 @@ const HomePage: React.FC = () => {
         <div className={`min-h-screen min-w-full`}>
             <div className={`${styles['app-container']} flex flex-col items-center min-h-screen min-w-full py-8 px-16 relative z-0`}>
 
-                <nav className="top-0 z-10 mb-8 w-full max-w-2xl">
-                    <NavigationMenu
-                        liveCount={campaigns.filter(camp => camp.status === 'COMPLETED').length}
-                        claimableCount={campaigns.filter(camp => camp.status === 'FAILED').length}
-                        raisingCount={campaigns.filter(camp => camp.status === 'RAISING').length}
-                        allCount={campaigns.length}
-                        selectedTab={selectedTab}
-                        onTabChange={setSelectedTab}
-                    />
+                <nav className="w-full items-center flex justify-start sm:justify-center mb-8">
+                    <div className="w-fit max-w-2xl">
+                        <NavigationMenu
+                            liveCount={campaigns.filter(camp => camp.status === 'COMPLETED').length}
+                            claimableCount={campaigns.filter(camp => camp.status === 'FAILED').length}
+                            raisingCount={campaigns.filter(camp => camp.status === 'RAISING').length}
+                            allCount={campaigns.length}
+                            selectedTab={selectedTab}
+                            onTabChange={setSelectedTab}
+                        />
+                    </div>
                 </nav>
 
                 <div className="flex flex-col w-full min-h-screen">

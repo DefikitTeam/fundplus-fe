@@ -580,7 +580,7 @@ const CampaignContent = () => {
                     )}
                     <div className="flex justify-center items-center w-full">
                         <div className="relative inline-block group">
-                            {!isCreator && (
+                            {!isCreator && campaign.status !== 'COMPLETED' && (
                                 <button
                                     onClick={handleDonateFundClick}
                                     className={`font-bold py-2 px-4 rounded ${

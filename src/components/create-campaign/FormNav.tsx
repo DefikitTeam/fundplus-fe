@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './FormNav.module.css';
 import HowItWorksModal from '../modals/HowItWorksModal';
-import { BsTwitterX } from "react-icons/bs";
+import { FaSquareXTwitter } from 'react-icons/fa6';
 
 const FormNav: React.FC = () => {
     const [activeLink, setActiveLink] = useState<string>('');
@@ -36,7 +36,7 @@ const FormNav: React.FC = () => {
     return (
         <>
         <div className="navbar">
-            <div className="navbar-start">
+            <div className="navbar-start sm:hidden">
                 <div className="dropdown">
                     <div tabIndex={0} role="button" className="btn btn-ghost sm:hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -46,7 +46,7 @@ const FormNav: React.FC = () => {
                     <ul tabIndex={0} className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                         <li>
                             <div className='relative group'>
-                                <BsTwitterX />
+                                <FaSquareXTwitter size={20} />
                                 <a className={`${styles['nav-link']} text-center`} onClick={handleTwitterClick}>
                                     VISIT OUR SOCIAL MEDIA
                                 </a>
@@ -77,7 +77,7 @@ const FormNav: React.FC = () => {
                 <ul className="menu menu-horizontal px-1">
                     <li>
                         <div className='relative group'>
-                            <BsTwitterX />
+                            <FaSquareXTwitter color='white' size={20} />
                             <a className={`${styles['nav-link']} text-center`} onClick={handleTwitterClick}>
                                 VISIT OUR SOCIAL MEDIA
                             </a>

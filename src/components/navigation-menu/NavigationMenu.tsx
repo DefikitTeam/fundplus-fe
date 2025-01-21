@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './NavigationMenu.module.css';
 import HowItWorksModal from '../modals/HowItWorksModal';
-import { BsTwitterX } from "react-icons/bs";
+import { FaSquareXTwitter } from "react-icons/fa6";
 
 interface NavigationMenuProps {
     selectedTab: 'LIVE' | 'CLAIMABLE' | 'RAISING' | 'ALL';
@@ -74,7 +74,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
                     <li>
                         <div className='relative group'>
-                            <BsTwitterX />
+                            <FaSquareXTwitter size={20} />
                             <Link href="/" legacyBehavior>
                                 <a
                                     className={`${styles['nav-link']} text-center ${activeLink === 'telegram' ? styles['active'] : ''}`}
@@ -165,7 +165,7 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
                 <ul className="menu menu-horizontal px-1">
                 <li>
                     <div className='relative group'>
-                        <BsTwitterX />
+                        <FaSquareXTwitter color='white' size={20} />
                         <Link href="/" legacyBehavior>
                             <a
                                 className={`${styles['nav-link']} text-center ${activeLink === 'telegram' ? styles['active'] : ''}`}
