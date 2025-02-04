@@ -143,7 +143,7 @@ const CampaignContent = () => {
         setClaiming(true);
         setClaimError(null);
         setClaimSuccess(null);
-    
+     
         try {
             if (!canClaim) {
                 throw new Error("Campaign deposit deadline has not passed yet");
@@ -243,7 +243,24 @@ const CampaignContent = () => {
                 }
 
                 const result: APIResponse = await response.json();
-                setCampaign(result.data);
+
+                const metadataResponse = await fetch(result.data.uri);
+                if (metadataResponse.ok) {
+                    const metadata = await metadataResponse.json();
+                    // Set campaign with metadata
+                    setCampaign({
+                        ...result.data,
+                        description: metadata.description,
+                        image: metadata.image
+                    });
+                } else {
+                    // Fallback if metadata fetch fails
+                    setCampaign({
+                        ...result.data,
+                        description: 'No description available.',
+                        image: '/unknown.svg'
+                    });
+                }
 
             } catch (error) {
                 console.error('Error fetching campaign details:', error);
