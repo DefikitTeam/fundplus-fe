@@ -15,7 +15,12 @@ import { NFTStorage, File } from 'nft.storage';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { configs } from '@/env';
-import FormNav from './FormNav';
+import { Konkhmer_Sleokchher, Inter } from 'next/font/google';
+
+const konkhmer = Konkhmer_Sleokchher({
+    subsets: ['latin'],
+    weight: '400'
+})
 
 interface ExperimentFormProps {
     onClose: () => void;
@@ -211,28 +216,24 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
     return (
         <div className="flex flex-col w-full min-h-screen"> 
 
-        <nav className="w-full items-center flex justify-start sm:justify-center mb-8">
-            <div className="w-fit max-w-2xl">
-                <FormNav />
-            </div>
-        </nav>
-
         <div className={styles['form-container']}>
 
-            <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-                <h2 className={`text-2xl ${styles['gradient-text']} font-bold text-center mb-6`}>New Fund Raising
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <h2 className={`text-xl sm:text-5xl ${styles['gradient-text']} font-bold text-center mb-8 ${konkhmer.className}`}>New Fund Raising
                     Campaign</h2>
 
                 <div className="mb-4">
-                    <label className={`text-md ${styles['gradient-text']} font-medium mb-4`}>Token Name <span
+                    <label className={`text-lg text-white font-bold mb-8`}>Token Name <span
                         className="text-red-500">*</span></label>
                     <input
                         name="name"
                         type="text"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
-                        style={{ colorScheme: 'light' }}
+                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
+                        style={{
+                            colorScheme: 'light',
+                        }}
                         required
                     />
                     {isSubmitted && formData.name.trim() === '' && (
@@ -241,26 +242,28 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                 </div>
 
                 <div className="mb-4">
-                    <label className={`text-md ${styles['gradient-text']} font-medium mb-4`}>Token Symbol <span
+                    <label className={`text-md text-white font-bold mb-6`}>Token Symbol <span 
                         className="text-red-500">*</span></label>
                     <input
-                        name="symbol"
+                        name="name"
                         type="text"
-                        value={formData.symbol}
+                        value={formData.name}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
-                        style={{ colorScheme: 'light' }}
+                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
+                        style={{
+                            colorScheme: 'light',
+                        }}
                         required
                     />
                 </div>
 
                 <div className="mb-4">
-                    <label className={`text-md ${styles['gradient-text']} font-medium mb-4`}>Token Description</label>
+                    <label className={`text-md text-white font-bold mb-4`}>Token Description</label>
                     <textarea
                         name="uri"
                         value={formData.uri}
                         onChange={handleChange}
-                        className="w-full h-32 p-2 border rounded text-black bg-white dark:bg-white"
+                        className="w-full h-32 p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg-transparent dark:bg-transparent"
                     />
                 </div>
 
@@ -269,7 +272,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         fieldName={
                             <>
                                 <span
-                                    className={`text-md ${styles['gradient-text']} font-medium mb-4`}>Token Image</span>
+                                    className={`text-md text-white font-bold mb-4`}>Token Image</span>
                             </>
                         }
                         onChange={(file) => setUploadedImage(file)}
@@ -281,7 +284,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         label={
                             <>
                                 <span
-                                    className={`text-md ${styles['gradient-text']} font-medium mb-4`}>Deposit Deadline <span
+                                    className={`text-md text-white font-bold mb-4`}>Deposit Deadline <span
                                     className="text-red-500">*</span></span>
                             </>
                         }
@@ -293,7 +296,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         name="depositDeadline"
                         value={formData.depositDeadline}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black bg-white dark:bg-white dark:text-black"
+                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
                         style={{ colorScheme: 'light' }}
                         required
                     />
@@ -308,7 +311,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         label={
                             <>
                                 <span
-                                    className={`text-md ${styles['gradient-text']} font-medium mb-4`}>Trade Deadline <span
+                                    className={`text-md text-white font-bold mb-4`}>Trade Deadline <span
                                     className="text-red-500">*</span></span>
                             </>
                         }
@@ -319,7 +322,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="date"
                         value={formData.tradeDeadline}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
+                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
                         style={{ colorScheme: 'light' }}
                         required
                     />
@@ -329,7 +332,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                 </div>
 
                 <div className="mb-4">
-                    <label className={`text-md ${styles['gradient-text']} font-medium mb-4`}>Donation Goal (SOL) <span
+                    <label className={`text-md text-white font-bold mb-4`}>Donation Goal (SOL) <span
                         className="text-red-500">*</span></label>
                     <input
                         name="donationGoal"
@@ -337,7 +340,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         step="0.1"
                         value={formData.donationGoal}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded text-black bg-white dark:bg-white"
+                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
                         style={{ colorScheme: 'light' }}
                         required
                     />
@@ -345,7 +348,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
 
                 <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-[#7823E7] to-[#0BA1F8] text-white p-3 rounded flex items-center justify-center"
+                    className="w-[50%] mx-auto bg-gradient-to-r from-[#673DF5] to-[#B096F3] text-white p-3 rounded-lg flex items-center justify-center"
                 >
                     {isSubmitted && !showPopup && <Loader2 className="animate-spin inline-block mr-2" size={20} />}
                     Submit

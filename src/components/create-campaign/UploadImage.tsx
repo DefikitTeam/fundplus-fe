@@ -2,6 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { Upload, X } from 'lucide-react';
 import Image from 'next/image';
+import { FaPlus } from "react-icons/fa6";
 
 interface ImageUploadFieldProps {
   required?: boolean;
@@ -96,10 +97,10 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`relative w-2/5 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer
+        className={`relative w-[160px] h-[160px] rounded-lg p-8 text-center cursor-pointer
           transition-colors duration-200 ease-in-out
           ${error ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-blue-500'}
-          ${image ? 'bg-gray-50' : 'bg-white'}`}
+          ${image ? 'bg-transparent' : 'bg-[rgba(0,0,0,0.32)]'}`}
       >
         <input
           ref={fileInputRef}
@@ -130,8 +131,8 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           </div>
         ) : (
           <div className="space-y-2">
-            <Upload className="mx-auto h-12 w-12 text-gray-400" />
-            <div className="text-base">Upload</div>
+            <FaPlus className="mx-auto h-12 w-12 text-[#7967A8]" />
+            <div className="text-base text-[#7967A8]">Upload</div>
           </div>
         )}
       </div>

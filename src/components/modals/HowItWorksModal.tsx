@@ -3,6 +3,8 @@
 import React, { useEffect} from 'react';
 import styles from './HowItWorksModal.module.css';
 import ReactMarkdown from 'react-markdown';
+import { IoClose } from "react-icons/io5";
+
 interface HowItWorksModalProps {
     isOpen: boolean;
     isClosing: boolean;
@@ -36,13 +38,13 @@ const HowItWorksModal: React.FC<HowItWorksModalProps> = ({ isOpen, isClosing, on
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
             <div className={modalClasses} onClick={(e) => e.stopPropagation()}>
-                <button className={styles.closeButton} onClick={onClose}>
-                    &times;
+                <button className={`${styles.closeButton}`} onClick={onClose}>
+                    <IoClose className='text-[#AE94F3]' />
                 </button>
                 <h1 className="text-center text-4xl font-bold mb-6">
-                    FundPlus: Fundraising and Token Management System
+                    <span className={`inline-block text-transparent bg-clip-text`} style={{backgroundImage: 'linear-gradient(to right, #6A41F5, #AE94F3 29%'}}>FundPlus:</span> Fundraising and Token Management System
                 </h1>
-                <ReactMarkdown className="prose">
+                <ReactMarkdown className={`prose`}>
 {`
 
 ## Overview

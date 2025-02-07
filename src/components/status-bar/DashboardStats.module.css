@@ -17,7 +17,7 @@
     bottom: 0;
     border-radius: 8px;
     padding: 1px;
-    background: linear-gradient(to right, #7823E7, #0BA1F8);
+    background: linear-gradient(to right, #683FF5, #AE94F3);
     -webkit-mask:
             linear-gradient(#fff 0 0) content-box,
             linear-gradient(#fff 0 0);
@@ -26,7 +26,7 @@
 }
 
 .active {
-    background: linear-gradient(to right, #7823E7, #0BA1F8);
+    background: linear-gradient(to right, #683FF5, #AE94F3);
     color: white;
 }
 

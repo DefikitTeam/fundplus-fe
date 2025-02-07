@@ -3,16 +3,15 @@
 // src/app/all-campaigns/page.tsx
 'use client';
 import React, { useState, useEffect } from 'react';
-import { BN } from '@coral-xyz/anchor';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { configs } from '@/env';
 
-import NavigationMenu from '../../components/navigation-menu/NavigationMenu';
-import DashboardStats from '../../components/dashboard-stats/DashboardStats';
+// import NavigationMenu from '../../components/navigation-menu/NavigationMenu';
+import DashboardStats from '@/components/status-bar/DashboardStats';
 
 import styles from './app.module.css';
-import BackToTop from '@/components/back-to-top/BackToTop';
+import { WelcomeSection } from '@/components/welcome-section/WelcomeSection';
 
 interface CampaignData {
     id: string;
@@ -130,116 +129,113 @@ const HomePage: React.FC = () => {
     };
 
     return (
-        <div className={`min-h-screen min-w-full`}>
-            <div className={`${styles['app-container']} flex flex-col items-center min-h-screen min-w-full py-8 px-16 relative z-0`}>
+        <div className="flex flex-col w-full">
+            {/* Welcome Section */}
+            <div className="w-full">
+                <WelcomeSection />
+            </div>
 
-                <nav className="w-full items-center flex justify-start sm:justify-center mb-8">
-                    <div className="w-fit max-w-2xl">
-                        <NavigationMenu
-                            liveCount={campaigns.filter(camp => camp.status === 'COMPLETED').length}
-                            claimableCount={campaigns.filter(camp => camp.status === 'FAILED').length}
-                            raisingCount={campaigns.filter(camp => camp.status === 'RAISING').length}
-                            allCount={campaigns.length}
-                            selectedTab={selectedTab}
-                            onTabChange={setSelectedTab}
-                        />
+            {/* Dashboard Stats - Static position */}
+            <div className="w-full">
+                <DashboardStats
+                    liveCount={campaigns.filter(camp => camp.status === 'COMPLETED').length}
+                    claimableCount={campaigns.filter(camp => camp.status === 'FAILED').length}
+                    raisingCount={campaigns.filter(camp => camp.status === 'RAISING').length}
+                    allCount={campaigns.length}
+                    selectedTab={selectedTab}
+                    onTabChange={(tab: string) => {
+                        if (tab === 'LIVE' || tab === 'CLAIMABLE' || tab === 'RAISING' || tab === 'ALL') {
+                            setSelectedTab(tab);
+                        }
+                    }}
+                />
+            </div>
+
+            {/* Campaign Cards Section */}
+            <div className="w-full mx-auto mt-2 px-4 ">
+                {loading ? (
+                    <div className="relative w-full flex justify-center">
+                        <div className="flex items-center gap-3 bg-transparent rounded-lg px-6 py-4"
+                            style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
+                            <Loader2 className="h-10 w-10 animate-spin text-white text-800" />
+                            <span className="text-2xl font-semibold text-white text-800">
+                                Loading campaigns...
+                            </span>
+                        </div>
                     </div>
-                </nav>
+                ) : (
+                    <div className="relative grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-4 py-8 w-full rounded"
+                    style={{ background: 'linear-gradient(180deg, #090C2F 0%, rgba(19, 22, 52, 0) 100%)' }}>
+                        {filteredCampaigns.map((camp) => (
+                            <div key={camp.id} 
+                                className={styles['card']} 
+                                onClick={() => handleCardClick(camp, camp.id)} 
+                                style={{ cursor: 'pointer' }}>
+                                <div className="flex flex-col sm:flex-row items-start overflow-hidden">
+                                    {camp.status === 'COMPLETED' ? (
+                                        <>
+                                            {camp.image && (
+                                                <img
+                                                    src={camp.image || '/unknown.svg'}
+                                                    alt={`${camp.name} Token`}
+                                                    className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
+                                                />
+                                            )}
+                                    
+                                            {/* Campaign Information */}
+                                            <div className="flex-1 min-w-0 mt-4 sm:mt-0 sm:ml-4">
+                                                <p className="text-lg font-bold truncate">
+                                                    {camp.name} ({camp.symbol})
+                                                </p>
+                                                <p className="text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
+                                                    {camp.description}
+                                                </p>
+                                                <p className="text-sm text-[#AE94F3] mt-2">
+                                                <strong className='text-white'>Trade Deadline:</strong> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
+                                                </p>
+                                                <div className="text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
+                                                    <strong className="flex-shrink-0 whitespace-nowrap">Mint Address:&nbsp;</strong>
+                                                    <span className="truncate text-[#AE94F3]">
+                                                        {camp.mint?.slice(0, 12)}...
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            {camp.image && (
+                                            <img
+                                                src={camp.image || '/unknown.svg'}
+                                                alt={`${camp.name} Token`}
+                                                className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
+                                            />
+                                            )}
 
-                <div className="flex flex-col w-full min-h-screen">
-                    <div className="mb-8 w-full max-w-3xl mx-auto hidden sm:block">
-                        <DashboardStats
-                            liveCount={campaigns.filter(camp => camp.status === 'COMPLETED').length}
-                            claimableCount={campaigns.filter(camp => camp.status === 'FAILED').length}
-                            raisingCount={campaigns.filter(camp => camp.status === 'RAISING').length}
-                            allCount={campaigns.length}
-                            selectedTab={selectedTab}
-                            onTabChange={setSelectedTab}
-                        />
-                    </div>
-
-                    <div className="flex flex-col w-full min-h-screen">
-                        {loading ? (
-                            <div className="w-full flex justify-center mt-8">
-                                <div className="flex items-center gap-3 bg-transparent rounded-lg px-6 py-4"
-                                style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
-                                    <Loader2 className="h-10 w-10 animate-spin text-white text-800" />
-                                    <span className="text-2xl font-semibold text-white text-800">
-                                        Loading campaigns...
-                                    </span>
+                                            {/* Campaign Information */}
+                                            <div className="text-center sm:text-left">
+                                                <p className="text-lg font-bold truncate">
+                                                    {camp.name} ({camp.symbol})
+                                                </p>
+                                                <p className="text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
+                                                    {camp.description}
+                                                </p>
+                                                <p className="text-sm text-[#AE94F3]">
+                                                    <strong className='text-white'>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
+                                                </p>
+                                                <p className="text-sm text-[#AE94F3]">
+                                                    <strong className='text-white'>Donation Goal:</strong> {camp.donationGoal} SOL
+                                                </p>
+                                                <p className="text-sm text-[#AE94F3]">
+                                                    <strong className='text-white'>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             </div>
-                        ) : (
-                            <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 bg-slate-800 gap-4 py-8 w-full max-w-full px-4 rounded">
-                                {filteredCampaigns.map((camp) => (
-                                    <div key={camp.id} 
-                                        className={styles['card']} 
-                                        onClick={() => handleCardClick(camp, camp.id)} 
-                                        style={{ cursor: 'pointer' }}>
-                                        <div className="flex flex-col sm:flex-row items-start overflow-hidden">
-                                            {camp.status === 'COMPLETED' ? (
-                                                <>
-                                                    {camp.image && (
-                                                        <img
-                                                            src={camp.image || '/unknown.svg'}
-                                                            alt={`${camp.name} Token`}
-                                                            className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
-                                                        />
-                                                    )}
-                                        
-                                                    {/* Campaign Information */}
-                                                    <div className="flex-1 min-w-0 mt-4 sm:mt-0 sm:ml-4">
-                                                        <p className="text-lg font-bold truncate">
-                                                            {camp.name} ({camp.symbol})
-                                                        </p>
-                                                        <p className="text-sm mt-1 text-white text-600 overflow-hidden text-ellipsis">
-                                                            {camp.description}
-                                                        </p>
-                                                        <p className="text-sm mt-2">
-                                                        <strong>Trade Deadline:</strong> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
-                                                        </p>
-                                                        <div className="text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
-                                                            <strong className="flex-shrink-0 whitespace-nowrap">Mint Address:&nbsp;</strong>
-                                                            <span className="truncate">
-                                                                {camp.mint?.slice(0, 12)}...
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    {camp.image && (
-                                                    <img
-                                                        src={camp.image || '/unknown.svg'}
-                                                        alt={`${camp.name} Token`}
-                                                        className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
-                                                    />
-                                                    )}
-
-                                                    {/* Campaign Information */}
-                                                    <div className="text-center sm:text-left">
-                                                        <p className="text-sm">
-                                                            <strong>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
-                                                        </p>
-                                                        <p className="text-sm">
-                                                            <strong>Donation Goal:</strong> {camp.donationGoal} SOL
-                                                        </p>
-                                                        <p className="text-sm">
-                                                            <strong>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
-                                                        </p>
-                                                        <p className="text-lg font-bold">
-                                                            {camp.name} ({camp.symbol}): <span className='font-normal text-sm'>{camp.description}</span>
-                                                        </p>
-                                                    </div>
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        ))}
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

@@ -1,63 +1,55 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 'use client';
-import localFont from "next/font/local";
-import "@/app/globals.css";
+
+import React, { useMemo } from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { PhantomWalletAdapter, SolflareWalletAdapter, TrustWalletAdapter } from '@solana/wallet-adapter-wallets';
-// import { WalletProviderWrapper } from '../context/WalletContext';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
-import React, { useMemo } from 'react';
-import { BalanceDisplay } from '@/components/get-balance/GetBalance';
-import { WalletModalProvider, WalletMultiButton, WalletDisconnectButton } from "@solana/wallet-adapter-react-ui";
+import { NavigationBar } from '@/components/nav-bar/NavigationBar';
+import BackToTop from '@/components/back-to-top/BackToTop';
+import "./globals.css";
 
-import '@solana/wallet-adapter-react-ui/styles.css';
-import PrePumpfun from "@/components/pre-pump-logo/PrePumpfun";
-import BackToTop from "@/components/back-to-top/BackToTop";
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
-
+// Default styles that can be overridden by your app
+require('@solana/wallet-adapter-react-ui/styles.css');
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-
+  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
   const network = WalletAdapterNetwork.Devnet;
+
+  // You can also provide a custom RPC endpoint.
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  const wallets = useMemo(() => [new PhantomWalletAdapter(), new SolflareWalletAdapter(), new TrustWalletAdapter()], []);
+
+  // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
+  // Only the wallets you configure here will be compiled into your application, and only the dependencies
+  // of wallets that your users connect to will be loaded.
+  const wallets = useMemo(
+    () => [new PhantomWalletAdapter()],
+    [network]
+  );
 
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="min-h-screen">
         <ConnectionProvider endpoint={endpoint}>
-          <WalletProvider wallets={wallets} autoConnect={true}>
+          <WalletProvider wallets={wallets} autoConnect>
             <WalletModalProvider>
-              <main className="relative min-h-screen min-w-full ">
-                <nav className="w-full flex justify-center items-center py-8">
-                  <BackToTop />
-                  <div className="flex-1 flex justify-center scale-75 sm:scale-100">
-                    <PrePumpfun />
-                  </div>
-
-                  <div className="absolute top-4 right-4 flex flex-col items-end break-words scale-50 sm:scale-90 origin-top-right">
-                    <WalletMultiButton className="!px-4 !py-2 text-md" />
-                    <WalletDisconnectButton className="!px-4 !py-2 text-md" />
-                    <div className="scale-95">
-                      <BalanceDisplay />
-                    </div>
-                  </div>
-                </nav>
-                <div className="flex-1 z-50 mt-4">{children}</div>
-              </main>
+              <div className="relative min-h-screen">
+                <div className="gradient-bg">
+                  <div className="gradient-circle-1" />
+                  <div className="gradient-circle-2" />
+                </div>
+                <div className="relative z-[100]">
+                  <NavigationBar />
+                </div>
+                {children}
+                <BackToTop />
+              </div>
             </WalletModalProvider>
           </WalletProvider>
         </ConnectionProvider>

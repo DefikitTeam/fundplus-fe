@@ -1,9 +1,10 @@
 .form-container {
-    @apply flex justify-center items-center min-h-screen min-w-full p-4;
+    @apply flex justify-center items-center min-h-screen min-w-full p-4 mt-24;
 }
 
 .form {
-    @apply bg-white rounded-lg shadow-md p-8 w-full max-w-7xl;
+    @apply rounded-lg shadow-md p-8 w-full max-w-none;
+    background-image: linear-gradient(to bottom, rgba(19, 22, 52, 1) 0%, rgba(9, 12, 47, 0) 100%);
 }
 
 .input {

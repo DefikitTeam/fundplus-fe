@@ -25,19 +25,20 @@ const BackToTop: React.FC = () => {
 
   return (
     <div className='App'>
-        {backToTopVisible && (
+      {backToTopVisible && (
         <button
-              className={` 
-                        fixed bottom-[30px] right-[10px] h-[50px] w-[50px] 
-                        rounded-[25%] text-[40px] text-white border-none
-                        cursor-pointer flex items-center justify-center
-                        bg-gradient-to-r from-[#7823E7] to-[#0BA1F8] scale-75 sm:scale-100 z-[100]`}
-              onClick={scrollToTop}>
-                <BiSolidToTop />
+          className="fixed bottom-[30px] right-[10px] h-[50px] w-[50px] 
+                     rounded-3xl text-[40px] text-white border-none
+                     cursor-pointer flex items-center justify-center
+                     hover:opacity-90 transition-opacity z-[100]"
+          style={{ background: 'linear-gradient(90deg, #673DF5 0%, #B096F3 100%)' }}
+          onClick={scrollToTop}
+        >
+          <BiSolidToTop />
         </button>
       )}
     </div>
   );
-}
+};
 
 export default BackToTop;
