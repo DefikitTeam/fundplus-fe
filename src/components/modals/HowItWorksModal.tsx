@@ -41,10 +41,26 @@ const HowItWorksModal: React.FC<HowItWorksModalProps> = ({ isOpen, isClosing, on
                 <button className={`${styles.closeButton}`} onClick={onClose}>
                     <IoClose className='text-[#AE94F3]' />
                 </button>
-                <h1 className="text-center text-4xl font-bold mb-6">
+                <div className='pt-5'>
+                <h1 className="text-center text-2xl sm:text-4xl font-bold mb-6">
                     <span className={`inline-block text-transparent bg-clip-text`} style={{backgroundImage: 'linear-gradient(to right, #6A41F5, #AE94F3 29%'}}>FundPlus:</span> Fundraising and Token Management System
                 </h1>
-                <ReactMarkdown className={`prose`}>
+                <ReactMarkdown 
+                className={`
+                    prose prose-invert 
+                    prose-ol:marker:text-white prose-ul:marker:text-white 
+                    prose-li:marker:text-white
+                    max-w-none
+                  `}
+                  components={{
+                    h1: ({ children }) => <h1 className="text-2xl sm:text-3xl font-bold mt-6 mb-4 text-white">{children}</h1>,
+                    h2: ({ children }) => <h2 className="text-xl sm:text-2xl font-bold mt-6 mb-4 text-white">{children}</h2>,
+                    h3: ({ children }) => <h3 className="text-lg sm:text-xl font-bold mt-6 mb-4 text-white">{children}</h3>,
+                    p: ({ children }) => <p className="text-sm sm:text-lg mb-4 text-white">{children}</p>,
+                    ul: ({ children }) => <ul className="list-disc list-outside pl-5 marker:text-white">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal list-outside pl-5 marker:text-white">{children}</ol>,
+                    li: ({ children }) => <li className="text-white mb-2 marker:text-white">{children}</li>
+                  }}>
 {`
 
 ## Overview
@@ -102,6 +118,7 @@ Once the token reaches a specific Market Cap (MC) on Pumpfun:
 ![Creator Flow](/creator_flow.jpg)
 `}
                 </ReactMarkdown>
+                </div>
             </div>
         </div>
     );
