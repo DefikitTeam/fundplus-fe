@@ -223,7 +223,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                     Campaign</h2>
 
                 <div className="mb-4">
-                    <label className={`text-lg text-white font-bold mb-8`}>Token Name <span
+                    <label className={`text-sm sm:text-lg text-white font-bold mb-8`}>Token Name <span
                         className="text-red-500">*</span></label>
                     <input
                         name="name"

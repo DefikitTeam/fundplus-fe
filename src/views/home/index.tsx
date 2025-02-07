@@ -155,8 +155,7 @@ const HomePage: React.FC = () => {
             <div className="w-full mx-auto mt-2 px-4 ">
                 {loading ? (
                     <div className="relative w-full flex justify-center">
-                        <div className="flex items-center gap-3 bg-transparent rounded-lg px-6 py-4"
-                            style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
+                        <div className="flex items-center gap-3 bg-transparent rounded-lg px-6 py-4 border-2 border-[#AE94F3]">
                             <Loader2 className="h-10 w-10 animate-spin text-white text-800" />
                             <span className="text-2xl font-semibold text-white text-800">
                                 Loading campaigns...
@@ -164,7 +163,7 @@ const HomePage: React.FC = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="relative grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-4 py-8 w-full rounded"
+                    <div className="relative grid grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 gap-1 sm:gap-4 py-4 sm:py-8 w-full rounded"
                     style={{ background: 'linear-gradient(180deg, #090C2F 0%, rgba(19, 22, 52, 0) 100%)' }}>
                         {filteredCampaigns.map((camp) => (
                             <div key={camp.id} 
@@ -212,7 +211,7 @@ const HomePage: React.FC = () => {
                                             )}
 
                                             {/* Campaign Information */}
-                                            <div className="text-center sm:text-left">
+                                            <div className="text-left sm:text-left">
                                                 <p className="text-lg font-bold truncate">
                                                     {camp.name} ({camp.symbol})
                                                 </p>
