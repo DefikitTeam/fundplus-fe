@@ -168,31 +168,33 @@ const HomePage: React.FC = () => {
                         {filteredCampaigns.map((camp) => (
                             <div key={camp.id} 
                                 className={styles['card']} 
-                                onClick={() => handleCardClick(camp, camp.id)} 
+                                onClick={() => handleCardClick(camp, camp.id)}
                                 style={{ cursor: 'pointer' }}>
-                                <div className="flex flex-col sm:flex-row items-start overflow-hidden">
+                                <div className="flex flex-row sm:flex-row flex-wrap items-start overflow-hidden">
                                     {camp.status === 'COMPLETED' ? (
                                         <>
-                                            {camp.image && (
-                                                <img
-                                                    src={camp.image || '/unknown.svg'}
-                                                    alt={`${camp.name} Token`}
-                                                    className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
-                                                />
-                                            )}
+                                            <div className="h-32 w-32 sm:w-24 sm:h-24 mr-4 mb-0 object-cover rounded">
+                                                {camp.image && (
+                                                    <img
+                                                        src={camp.image || '/unknown.svg'}
+                                                        alt={`${camp.name} Token`}
+                                                        // className="h-32 w-32 sm:w-24 sm:h-24 mr-4 mb-0 object-cover rounded"
+                                                    />
+                                                )}
+                                            </div>                                        
                                     
                                             {/* Campaign Information */}
-                                            <div className="flex-1 min-w-0 mt-4 sm:mt-0 sm:ml-4">
-                                                <p className="text-lg font-bold truncate">
+                                            <div className="flex-1 min-w-0 mt-0 sm:mt-0 ml-2 sm:ml-4">
+                                                <p className="text-md sm:text-lg font-bold truncate">
                                                     {camp.name} ({camp.symbol})
                                                 </p>
-                                                <p className="text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
+                                                <p className="text-xs sm:text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
                                                     {camp.description}
                                                 </p>
-                                                <p className="text-sm text-[#AE94F3] mt-2">
+                                                <p className="text-xs sm:text-sm text-[#AE94F3] mt-2">
                                                 <strong className='text-white'>Trade Deadline:</strong> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
                                                 </p>
-                                                <div className="text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
+                                                <div className="text-xs sm:text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
                                                     <strong className="flex-shrink-0 whitespace-nowrap">Mint Address:&nbsp;</strong>
                                                     <span className="truncate text-[#AE94F3]">
                                                         {camp.mint?.slice(0, 12)}...
@@ -206,7 +208,7 @@ const HomePage: React.FC = () => {
                                             <img
                                                 src={camp.image || '/unknown.svg'}
                                                 alt={`${camp.name} Token`}
-                                                className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
+                                                className="w-32 h-32 sm:w-24 sm:h-24 mr-4 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
                                             />
                                             )}
 
@@ -214,9 +216,6 @@ const HomePage: React.FC = () => {
                                             <div className="text-left sm:text-left">
                                                 <p className="text-lg font-bold truncate">
                                                     {camp.name} ({camp.symbol})
-                                                </p>
-                                                <p className="text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
-                                                    {camp.description}
                                                 </p>
                                                 <p className="text-sm text-[#AE94F3]">
                                                     <strong className='text-white'>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
@@ -226,6 +225,11 @@ const HomePage: React.FC = () => {
                                                 </p>
                                                 <p className="text-sm text-[#AE94F3]">
                                                     <strong className='text-white'>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
+                                                </p>
+                                            </div>
+                                            <div className="text-left sm:text-left mt-2">
+                                                <p className="text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
+                                                    {camp.description}
                                                 </p>
                                             </div>
                                         </>
