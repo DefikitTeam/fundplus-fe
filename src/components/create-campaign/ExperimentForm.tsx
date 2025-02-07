@@ -230,9 +230,9 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="text"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
+                        className="w-full py-1 sm:py-2 px-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
                         style={{
-                            colorScheme: 'light',
+                            colorScheme: 'dark',
                         }}
                         required
                     />
@@ -242,28 +242,28 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                 </div>
 
                 <div className="mb-4">
-                    <label className={`text-md text-white font-bold mb-6`}>Token Symbol <span 
+                    <label className={`text-sm sm:text-lg text-white font-bold mb-6`}>Token Symbol <span 
                         className="text-red-500">*</span></label>
                     <input
                         name="name"
                         type="text"
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
+                        className="w-full py-1 sm:py-2 px-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
                         style={{
-                            colorScheme: 'light',
+                            colorScheme: 'dark',
                         }}
                         required
                     />
                 </div>
 
                 <div className="mb-4">
-                    <label className={`text-md text-white font-bold mb-4`}>Token Description</label>
+                    <label className={`text-sm sm:text-lg text-white font-bold mb-4`}>Token Description</label>
                     <textarea
                         name="uri"
                         value={formData.uri}
                         onChange={handleChange}
-                        className="w-full h-32 p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg-transparent dark:bg-transparent"
+                        className="w-full h-32 py-1 sm:py-2 px-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg-transparent dark:bg-transparent"
                     />
                 </div>
 
@@ -272,7 +272,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         fieldName={
                             <>
                                 <span
-                                    className={`text-md text-white font-bold mb-4`}>Token Image</span>
+                                    className={`text-sm sm:text-lg text-white font-bold mb-4`}>Token Image</span>
                             </>
                         }
                         onChange={(file) => setUploadedImage(file)}
@@ -284,7 +284,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         label={
                             <>
                                 <span
-                                    className={`text-md text-white font-bold mb-4`}>Deposit Deadline <span
+                                    className={`text-sm sm:text-lg text-white font-bold mb-4`}>Deposit Deadline <span
                                     className="text-red-500">*</span></span>
                             </>
                         }
@@ -296,8 +296,8 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         name="depositDeadline"
                         value={formData.depositDeadline}
                         onChange={handleChange}
-                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
-                        style={{ colorScheme: 'light' }}
+                        className="w-full py-1 sm:py-2 px-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
+                        style={{ colorScheme: 'dark' }}
                         required
                     />
                     </div>
@@ -311,7 +311,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         label={
                             <>
                                 <span
-                                    className={`text-md text-white font-bold mb-4`}>Trade Deadline <span
+                                    className={`text-sm sm:text-lg text-white font-bold mb-4`}>Trade Deadline <span
                                     className="text-red-500">*</span></span>
                             </>
                         }
@@ -322,8 +322,8 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         type="date"
                         value={formData.tradeDeadline}
                         onChange={handleChange}
-                        className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
-                        style={{ colorScheme: 'light' }}
+                        className="w-full py-1 sm:py-2 px-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
+                        style={{ colorScheme: 'dark' }}
                         required
                     />
                     {errors.tradeDeadline && (
@@ -332,7 +332,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                 </div>
 
                 <div className="mb-4">
-                    <label className={`text-md text-white font-bold mb-4`}>Donation Goal (SOL) <span
+                    <label className={`text-sm sm:text-lg text-white font-bold mb-4`}>Donation Goal (SOL) <span
                         className="text-red-500">*</span></label>
                     <input
                         name="donationGoal"
@@ -341,7 +341,7 @@ const ExperimentForm: React.FC<ExperimentFormProps> = ({ onClose }) => {
                         value={formData.donationGoal}
                         onChange={handleChange}
                         className="w-full p-2 border-[2px] border-[#AE94F3] rounded-lg text-white bg:transparent dark:bg-transparent"
-                        style={{ colorScheme: 'light' }}
+                        style={{ colorScheme: 'dark' }}
                         required
                     />
                 </div>

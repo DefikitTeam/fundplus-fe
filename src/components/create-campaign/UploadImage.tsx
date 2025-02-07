@@ -97,7 +97,7 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`relative w-[160px] h-[160px] rounded-lg p-8 text-center cursor-pointer
+        className={`relative w-[120px] h-[120px] sm:w-[160px] sm:h-[160px] rounded-lg p-8 text-center cursor-pointer
           transition-colors duration-200 ease-in-out
           ${error ? 'border-red-500 bg-red-50' : 'border-gray-300 hover:border-blue-500'}
           ${image ? 'bg-transparent' : 'bg-[rgba(0,0,0,0.32)]'}`}
@@ -131,22 +131,22 @@ const ImageUploadField: React.FC<ImageUploadFieldProps> = ({
           </div>
         ) : (
           <div className="space-y-2">
-            <FaPlus className="mx-auto h-12 w-12 text-[#7967A8]" />
-            <div className="text-base text-[#7967A8]">Upload</div>
+            <FaPlus className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-[#7967A8]" />
+            <div className="text-sm sm:text-md text-base text-[#7967A8]">Upload</div>
           </div>
         )}
       </div>
 
       {error ? (
-        <p className="text-red-500 text-sm">{error}</p>
+        <p className="text-red-500 text-xs sm:text-sm">{error}</p>
       ) : (
-        <p className="text-gray-500 text-sm">
+        <p className="text-gray-500 text-xs sm:text-sm">
           Maximum file size: {maxSize}MB. Accepted file formats: JPG, JPEG, PNG
         </p>
       )}
 
       {required && !image && !error && (
-        <p className="text-red-500 text-sm">This field cannot be left blank</p>
+        <p className="text-red-500 text-xs sm:text-sm">This field cannot be left blank</p>
       )}
     </div>
   );

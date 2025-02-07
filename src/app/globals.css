@@ -5,58 +5,46 @@
 :root {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --bordergrad: linear-gradient(to right, #AE94F3, #65568D)
-}
-
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
-@layer components {
-  .gradient-bg {
-    @apply fixed inset-0 z-[-1] overflow-hidden pointer-events-none;
-  }
-
-  .gradient-bg::before {
-    @apply content-[''] absolute w-[504px] h-[504px] blur-[100px] rounded-full;
-    background-color: #7240FB;
-    opacity: 0.4;
-    left: 1028px;
-    top: 78px;
-  }
-
-  .gradient-bg::after {
-    @apply content-[''] absolute w-[574px] h-[574px] blur-[100px] rounded-full;
-    background-color: #7240FB;
-    opacity: 0.3;
-    left: -126px;
-    top: 567px;
-  }
-}
-
-@layer utilities {
-  .gradient-circle-1 {
-    @apply absolute w-[332px] h-[332px] blur-[100px] rounded-full;
-    background-color: #7240FB;
-    opacity: 0.3;
-    left: -209px;
-    top: -11px;
-  }
-
-  .gradient-circle-2 {
-    @apply absolute w-[574px] h-[574px] blur-[100px] rounded-full;
-    background-color: #7240FB;
-    opacity: 0.3;
-    left: 850px;
-    top: 1129px;
-  }
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.gradient-bg {
+  @apply fixed inset-0 z-0 overflow-hidden pointer-events-none;
+}
+
+.gradient-bg::before {
+  @apply content-[''] absolute w-[504px] h-[504px] blur-[100px] rounded-full;
+  background-color: #7240FB;
+  opacity: 0.4;
+  left: 1028px;
+  top: 78px;
+}
+
+.gradient-bg::after {
+  @apply content-[''] absolute w-[574px] h-[574px] blur-[100px] rounded-full;
+  background-color: #7240FB;
+  opacity: 0.3;
+  left: -126px;
+  top: 567px;
+}
+
+.gradient-circle-1 {
+  @apply absolute w-[332px] h-[332px] blur-[100px] rounded-full;
+  background-color: #7240FB;
+  opacity: 0.3;
+  left: -209px;
+  top: -11px;
+}
+
+.gradient-circle-2 {
+  @apply absolute w-[574px] h-[574px] blur-[100px] rounded-full;
+  background-color: #7240FB;
+  opacity: 0.3;
+  left: 850px;
+  top: 1129px;
 }

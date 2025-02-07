@@ -12,7 +12,6 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        bordergrad: "linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%)",
       },
       fontFamily: {
         'inria': ['Inria Sans', 'sans-serif'],
