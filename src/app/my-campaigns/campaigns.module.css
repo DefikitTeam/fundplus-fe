@@ -25,10 +25,7 @@
 }
 
 .card {
-  @apply w-full bg-transparent rounded-md text-white shadow-md p-6 transition-transform duration-200 hover:scale-105;
-  cursor: pointer;
-  border: 2px solid transparent; /* Makes space for the gradient border */
-  border-image: linear-gradient(to right, #7823E7, #0BA1F8) 1;
+  @apply border-2 border-[#AE94F3] w-full bg-transparent rounded-xl text-white shadow-md p-2 sm:p-6 transition-transform duration-200 hover:scale-105 cursor-pointer;
 }
 
 .heading {

@@ -25,7 +25,7 @@
   }
   
   .card {
-    @apply border-2 border-[#AE94F3] w-full bg-transparent rounded-xl text-white shadow-md p-6 transition-transform duration-200 hover:scale-105 cursor-pointer;
+    @apply border-2 border-[#AE94F3] w-full bg-transparent rounded-xl text-white shadow-md p-2 sm:p-6 transition-transform duration-200 hover:scale-105 cursor-pointer;
   }
   
   .heading {

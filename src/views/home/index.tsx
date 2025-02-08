@@ -156,8 +156,8 @@ const HomePage: React.FC = () => {
                 {loading ? (
                     <div className="relative w-full flex justify-center">
                         <div className="flex items-center gap-3 bg-transparent rounded-lg px-6 py-4 border-2 border-[#AE94F3]">
-                            <Loader2 className="h-10 w-10 animate-spin text-white text-800" />
-                            <span className="text-2xl font-semibold text-white text-800">
+                            <Loader2 className="h-6 w-6 sm:h-10 sm:w-10 animate-spin text-white text-400 sm:text-800" />
+                            <span className="text-xl sm:text-2xl font-semibold text-white text-400 sm:text-800">
                                 Loading campaigns...
                             </span>
                         </div>
@@ -173,29 +173,31 @@ const HomePage: React.FC = () => {
                                 <div className="flex flex-row sm:flex-row flex-wrap items-start overflow-hidden">
                                     {camp.status === 'COMPLETED' ? (
                                         <>
-                                            <div className="h-32 w-32 sm:w-24 sm:h-24 mr-4 mb-0 object-cover rounded">
+                                            <div className="mr-1 sm:mr-4 mb-0">
                                                 {camp.image && (
                                                     <img
                                                         src={camp.image || '/unknown.svg'}
                                                         alt={`${camp.name} Token`}
-                                                        // className="h-32 w-32 sm:w-24 sm:h-24 mr-4 mb-0 object-cover rounded"
+                                                        width={48}
+                                                        height={48}
+                                                        className="w-12 h-12 sm:w-24 sm:h-24 object-cover rounded"
                                                     />
                                                 )}
-                                            </div>                                        
+                                            </div>                                       
                                     
                                             {/* Campaign Information */}
                                             <div className="flex-1 min-w-0 mt-0 sm:mt-0 ml-2 sm:ml-4">
-                                                <p className="text-md sm:text-lg font-bold truncate">
-                                                    {camp.name} ({camp.symbol})
+                                                <p className="text-xs sm:text-lg font-bold truncate">
+                                                    {camp.name}
                                                 </p>
-                                                <p className="text-xs sm:text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
-                                                    {camp.description}
+                                                <p className="text-xs sm:text-lg font-bold truncate">
+                                                    {camp.symbol}
                                                 </p>
-                                                <p className="text-xs sm:text-sm text-[#AE94F3] mt-2">
-                                                <strong className='text-white'>Trade Deadline:</strong> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
+                                                <p className="text-[0.5rem] sm:text-sm text-[#AE94F3] mt-2">
+                                                <span className='text-white'>Trade Deadline:</span> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
                                                 </p>
-                                                <div className="text-xs sm:text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
-                                                    <strong className="flex-shrink-0 whitespace-nowrap">Mint Address:&nbsp;</strong>
+                                                <div className="text-[0.5rem] sm:text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
+                                                    <span className="flex-shrink-0 whitespace-nowrap">Mint Address:&nbsp;</span>
                                                     <span className="truncate text-[#AE94F3]">
                                                         {camp.mint?.slice(0, 12)}...
                                                     </span>
@@ -204,36 +206,44 @@ const HomePage: React.FC = () => {
                                         </>
                                     ) : (
                                         <>
-                                            {camp.image && (
-                                            <img
-                                                src={camp.image || '/unknown.svg'}
-                                                alt={`${camp.name} Token`}
-                                                className="w-32 h-32 sm:w-24 sm:h-24 mr-4 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
-                                            />
-                                            )}
+                                            <div className="mr-1 sm:mr-4 mb-0">
+                                                {camp.image && (
+                                                    <img
+                                                        src={camp.image || '/unknown.svg'}
+                                                        alt={`${camp.name} Token`}
+                                                        width={48}
+                                                        height={48}
+                                                        className="w-12 h-12 sm:w-24 sm:h-24 object-cover rounded"
+                                                    />
+                                                )}
+                                            </div>
 
                                             {/* Campaign Information */}
-                                            <div className="text-left sm:text-left">
-                                                <p className="text-lg font-bold truncate">
-                                                    {camp.name} ({camp.symbol})
+                                            <div className="flex-1 min-w-0 mt-0 sm:mt-0 ml-2 sm:ml-4">
+                                                <p className="text-xs sm:text-lg font-bold truncate">
+                                                    {camp.name}
                                                 </p>
-                                                <p className="text-sm text-[#AE94F3]">
-                                                    <strong className='text-white'>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
+                                                <p className="text-xs sm:text-lg font-bold truncate">
+                                                    {camp.symbol}
                                                 </p>
-                                                <p className="text-sm text-[#AE94F3]">
-                                                    <strong className='text-white'>Donation Goal:</strong> {camp.donationGoal} SOL
+                                                <p className="text-[0.5rem] sm:text-sm text-[#AE94F3]">
+                                                    <span className='text-white'>Fund Raised:</span> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
                                                 </p>
-                                                <p className="text-sm text-[#AE94F3]">
-                                                    <strong className='text-white'>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
+                                                <p className="text-[0.5rem] sm:text-sm text-[#AE94F3]">
+                                                    <span className='text-white'>Donation Goal:</span> {camp.donationGoal} SOL
                                                 </p>
-                                            </div>
-                                            <div className="text-left sm:text-left mt-2">
-                                                <p className="text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
-                                                    {camp.description}
+                                                <p className="text-[0.5rem] sm:text-sm text-[#AE94F3]">
+                                                    <span className='text-white'>Deposit Deadline:</span> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
                                                 </p>
                                             </div>
                                         </>
                                     )}
+                                </div>
+                                {/* Description - Full Width Below */}
+                                <div className="w-full mt-1 sm:mt-4 border-t border-[#AE94F3]/20 pt-3">
+                                    <p className="text-[0.5rem] sm:text-sm text-[#AE94F3] line-clamp-2">
+                                        {camp.description}
+                                    </p>
                                 </div>
                             </div>
                         ))}

@@ -14,6 +14,7 @@ import DashboardStats from '../../components/status-bar/DashboardStats';
 import { WelcomeSection } from '@/components/welcome-section/WelcomeSection';
 
 import styles from './campaigns.module.css';
+import { MyCampaignWelcome } from '@/components/welcome-section/MyCampaignsWelcome';
 
 interface CampaignData {
     id: string;
@@ -266,7 +267,7 @@ const AllCampaignsPage = () => {
         <div className="flex flex-col w-full">
             {/* Welcome Section */}
             <div className="w-full">
-                <WelcomeSection />
+                <MyCampaignWelcome />
             </div>
 
             {/* Dashboard Stats - Static position */}
@@ -289,46 +290,49 @@ const AllCampaignsPage = () => {
             <div className="w-full mx-auto mt-2 px-4 ">
                 {loading ? (
                     <div className="relative w-full flex justify-center">
-                        <div className="flex items-center gap-3 bg-transparent rounded-lg px-6 py-4"
-                            style={{ border: '2px solid transparent', borderImage: 'linear-gradient(to right, #7823E7, #0BA1F8) 1' }}>
-                            <Loader2 className="h-10 w-10 animate-spin text-white text-800" />
-                            <span className="text-2xl font-semibold text-white text-800">
+                        <div className="flex items-center gap-3 bg-transparent rounded-lg px-6 py-4 border-2 border-[#AE94F3]">
+                            <Loader2 className="h-6 w-6 sm:h-10 sm:w-10 animate-spin text-white text-400 sm:text-800" />
+                            <span className="text-xl sm:text-2xl font-semibold text-white text-400 sm:text-800">
                                 Loading campaigns...
                             </span>
                         </div>
                     </div>
                 ) : (
-                    <div className="relative grid grid-cols-1 lg:grid-cols-3 sm:grid-cols-2 gap-4 py-8 w-full rounded"
+                    <div className="relative grid grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 gap-1 sm:gap-4 py-4 sm:py-8 w-full rounded"
                     style={{ background: 'linear-gradient(180deg, #090C2F 0%, rgba(19, 22, 52, 0) 100%)' }}>
                         {filteredCampaigns.map((camp) => (
                             <div key={camp.id} 
                                 className={styles['card']} 
-                                onClick={() => handleCardClick(camp, camp.id)} 
+                                onClick={() => handleCardClick(camp, camp.id)}
                                 style={{ cursor: 'pointer' }}>
-                                <div className="flex flex-col sm:flex-row items-start overflow-hidden">
+                                <div className="flex flex-row sm:flex-row flex-wrap items-start overflow-hidden">
                                     {camp.status === 'COMPLETED' ? (
                                         <>
-                                            {camp.image && (
-                                                <img
-                                                    src={camp.image || '/unknown.svg'}
-                                                    alt={`${camp.name} Token`}
-                                                    className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
-                                                />
-                                            )}
+                                            <div className="mr-1 sm:mr-4 mb-0">
+                                                {camp.image && (
+                                                    <img
+                                                        src={camp.image || '/unknown.svg'}
+                                                        alt={`${camp.name} Token`}
+                                                        width={48}
+                                                        height={48}
+                                                        className="w-12 h-12 sm:w-24 sm:h-24 object-cover rounded"
+                                                    />
+                                                )}
+                                            </div>                                       
                                     
                                             {/* Campaign Information */}
-                                            <div className="flex-1 min-w-0 mt-4 sm:mt-0 sm:ml-4">
-                                                <p className="text-lg font-bold truncate">
-                                                    {camp.name} ({camp.symbol})
+                                            <div className="flex-1 min-w-0 mt-0 sm:mt-0 ml-2 sm:ml-4">
+                                                <p className="text-xs sm:text-lg font-bold truncate">
+                                                    {camp.name}
                                                 </p>
-                                                <p className="text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
-                                                    {camp.description}
+                                                <p className="text-xs sm:text-lg font-bold truncate">
+                                                    {camp.symbol}
                                                 </p>
-                                                <p className="text-sm text-[#AE94F3] mt-2">
-                                                <strong className='text-white'>Trade Deadline:</strong> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
+                                                <p className="text-[0.5rem] sm:text-sm text-[#AE94F3] mt-2">
+                                                <span className='text-white'>Trade Deadline:</span> {new Date(camp.tradeDeadline * 1000).toLocaleDateString()}
                                                 </p>
-                                                <div className="text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
-                                                    <strong className="flex-shrink-0 whitespace-nowrap">Mint Address:&nbsp;</strong>
+                                                <div className="text-[0.5rem] sm:text-sm mt-1 flex items-center truncate overflow-hidden overflow-ellipsis">
+                                                    <span className="flex-shrink-0 whitespace-nowrap">Mint Address:&nbsp;</span>
                                                     <span className="truncate text-[#AE94F3]">
                                                         {camp.mint?.slice(0, 12)}...
                                                     </span>
@@ -337,34 +341,44 @@ const AllCampaignsPage = () => {
                                         </>
                                     ) : (
                                         <>
-                                            {camp.image && (
-                                            <img
-                                                src={camp.image || '/unknown.svg'}
-                                                alt={`${camp.name} Token`}
-                                                className="w-32 h-32 sm:w-24 sm:h-24 mr-0 sm:mr-4 mb-4 sm:mb-0 object-cover rounded"
-                                            />
-                                            )}
+                                            <div className="mr-1 sm:mr-4 mb-0">
+                                                {camp.image && (
+                                                    <img
+                                                        src={camp.image || '/unknown.svg'}
+                                                        alt={`${camp.name} Token`}
+                                                        width={48}
+                                                        height={48}
+                                                        className="w-12 h-12 sm:w-24 sm:h-24 object-cover rounded"
+                                                    />
+                                                )}
+                                            </div>
 
                                             {/* Campaign Information */}
-                                            <div className="text-center sm:text-left">
-                                                <p className="text-lg font-bold truncate">
-                                                    {camp.name} ({camp.symbol})
+                                            <div className="flex-1 min-w-0 mt-0 sm:mt-0 ml-2 sm:ml-4">
+                                                <p className="text-xs sm:text-lg font-bold truncate">
+                                                    {camp.name}
                                                 </p>
-                                                <p className="text-sm mt-1 text-[#AE94F3] text-600 overflow-hidden text-ellipsis">
-                                                    {camp.description}
+                                                <p className="text-xs sm:text-lg font-bold truncate">
+                                                    {camp.symbol}
                                                 </p>
-                                                <p className="text-sm text-[#AE94F3]">
-                                                    <strong className='text-white'>Fund Raised:</strong> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
+                                                <p className="text-[0.5rem] sm:text-sm text-[#AE94F3]">
+                                                    <span className='text-white'>Fund Raised:</span> {(camp.totalFundRaised / 1e9).toFixed(2)} SOL
                                                 </p>
-                                                <p className="text-sm text-[#AE94F3]">
-                                                    <strong className='text-white'>Donation Goal:</strong> {camp.donationGoal} SOL
+                                                <p className="text-[0.5rem] sm:text-sm text-[#AE94F3]">
+                                                    <span className='text-white'>Donation Goal:</span> {camp.donationGoal} SOL
                                                 </p>
-                                                <p className="text-sm text-[#AE94F3]">
-                                                    <strong className='text-white'>Deposit Deadline:</strong> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
+                                                <p className="text-[0.5rem] sm:text-sm text-[#AE94F3]">
+                                                    <span className='text-white'>Deposit Deadline:</span> {new Date(camp.depositDeadline * 1000).toLocaleDateString()}
                                                 </p>
                                             </div>
                                         </>
                                     )}
+                                </div>
+                                {/* Description - Full Width Below */}
+                                <div className="w-full mt-1 sm:mt-4 border-t border-[#AE94F3]/20 pt-3">
+                                    <p className="text-[0.5rem] sm:text-sm text-[#AE94F3] line-clamp-2">
+                                        {camp.description}
+                                    </p>
                                 </div>
                             </div>
                         ))}
