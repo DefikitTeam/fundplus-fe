@@ -376,7 +376,7 @@ const AllCampaignsPage = () => {
                                 </div>
                                 {/* Description - Full Width Below */}
                                 <div className="w-full mt-1 sm:mt-4 border-t border-[#AE94F3]/20 pt-3">
-                                    <p className="text-[0.5rem] sm:text-sm text-[#AE94F3] line-clamp-2">
+                                    <p className="text-[0.5rem] sm:text-sm text-white line-clamp-2">
                                         {camp.description}
                                     </p>
                                 </div>
