@@ -27,7 +27,7 @@ export const MyCampaignWelcome: React.FC = () => {
           </span> Campaigns!
         </h1>
         <p className={`text-[0.3rem] sm:text-xs text-white p-1 sm:p-8 leading-[2.5] sm:leading-[2.5] ${khmer.className}`}>
-          Here are the place that you can view all the campaigns you have created and manage them.
+          Here is the place that you can view all the campaigns you have created and manage them.
         </p>
       </div>
       <img
