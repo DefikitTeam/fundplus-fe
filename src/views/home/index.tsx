@@ -32,6 +32,7 @@ interface CampaignData {
 }
 
 const HomePage: React.FC = () => {
+  console.log("Im testing v2")
   console.log("Im testing")
     console.log(process.env.NEXT_PUBLIC_TEST_ENV)
     const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
