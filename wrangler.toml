@@ -5,23 +5,9 @@ compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
 
 [env.staging]
-vars = { 
-    NEXT_PUBLIC_CAMPAIGN_CHECK_EVN = "staging", 
-    NODE_ENV = "staging",
-    NEXT_PUBLIC_CAMPAIGN_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign",
-    NEXT_PUBLIC_STATUS_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/status",
-    NEXT_PUBLIC_TOKEN_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/token-status",
-    NEXT_PUBLIC_UPLOAD_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/upload"
-}
+vars = { NEXT_PUBLIC_CAMPAIGN_CHECK_EVN = "staging", NEXT_PUBLIC_ENV = "staging",NEXT_PUBLIC_CAMPAIGN_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign",NEXT_PUBLIC_STATUS_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/status",NEXT_PUBLIC_TOKEN_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/token-status",NEXT_PUBLIC_UPLOAD_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/upload" }
 route = "prepumpfun-fe.pages.dev"
 
 [env.production]
-vars = { 
-    NEXT_PUBLIC_CAMPAIGN_CHECK_EVN = "production", 
-    NODE_ENV = "production",
-    NEXT_PUBLIC_CAMPAIGN_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign",
-    NEXT_PUBLIC_STATUS_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/status",
-    NEXT_PUBLIC_TOKEN_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/token-status",
-    NEXT_PUBLIC_UPLOAD_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/upload"
-}
+vars = { NEXT_PUBLIC_CAMPAIGN_CHECK_EVN = "production", NEXT_PUBLIC_ENV = "production",NEXT_PUBLIC_CAMPAIGN_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign",NEXT_PUBLIC_STATUS_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/status",NEXT_PUBLIC_TOKEN_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/token-status",NEXT_PUBLIC_UPLOAD_ENDPOINT = "https://prepump-stg-api.fundplus.org/v1/campaign/upload"}
 route = "fundplus.org"

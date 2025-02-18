@@ -18,9 +18,9 @@ export const LOG_LEVEL = LOG_LEVEL_SCHEMA.parse(
 );
 
 // Environment flags
-export const isDev = process.env.NODE_ENV === 'development';
-export const isProd = process.env.NODE_ENV === 'production';
-export const isStg = process.env.NODE_ENV === 'staging';
+export const isDev = process.env.NEXT_PUBLIC_ENV === 'development';
+export const isProd = process.env.NEXT_PUBLIC_ENV === 'production';
+export const isStg = process.env.NEXT_PUBLIC_ENV === 'staging';
 
 // Config getter function
 export const getConfigs = () => {
@@ -35,7 +35,7 @@ export const getConfigs = () => {
             isDev,
             isProd,
             isStg,
-            env: process.env.NODE_ENV
+            env: process.env.NEXT_PUBLIC_ENV
         }
     };
 };
