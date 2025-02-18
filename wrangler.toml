@@ -12,15 +12,9 @@ NEXT_PUBLIC_UPLOAD_ENDPOINT="https://prepump-stg-api.fundplus.org/v1/campaign/up
 NEXT_PUBLIC_CAMPAIGN_CHECK_EVN="development"
 NODE_ENV="development"
 [env.staging]
-vars = {
-NEXT_PUBLIC_CAMPAIGN_CHECK_EVN="staging"
-NODE_ENV="staging"
-}
+vars = { NEXT_PUBLIC_CAMPAIGN_CHECK_EVN = "staging", NODE_ENV = "staging" }
 route = "prepumpfun-fe.pages.dev"
 
 [env.production]
-vars = {
-NEXT_PUBLIC_CAMPAIGN_CHECK_EVN="production"
-NODE_ENV="production"
-}
+vars = { NEXT_PUBLIC_CAMPAIGN_CHECK_EVN = "production", NODE_ENV = "production" }
 route = "fundplus.org"
