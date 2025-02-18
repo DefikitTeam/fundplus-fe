@@ -2,16 +2,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/app/all-campaigns/page.tsx
 'use client';
-import React, { useState, useEffect } from 'react';
+import { configs } from '@/env';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { configs } from '@/env';
+import React, { useEffect, useState } from 'react';
 
 // import NavigationMenu from '../../components/navigation-menu/NavigationMenu';
 import DashboardStats from '@/components/status-bar/DashboardStats';
 
-import styles from './app.module.css';
 import { WelcomeSection } from '@/components/welcome-section/WelcomeSection';
+import styles from './app.module.css';
 
 interface CampaignData {
     id: string;
@@ -32,6 +32,7 @@ interface CampaignData {
 }
 
 const HomePage: React.FC = () => {
+    console.log(process.env.NEXT_PUBLIC_TEST_ENV)
     const [campaigns, setCampaigns] = useState<CampaignData[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
