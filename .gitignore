@@ -44,4 +44,4 @@ package-lock.json
 .idea
 /.idea
 
-wrangler.toml
+# wrangler.toml

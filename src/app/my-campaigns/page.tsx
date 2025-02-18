@@ -47,6 +47,8 @@ const AllCampaignsPage = () => {
     const { connected, publicKey, wallet } = walletContextState;
     console.log(publicKey?.toBase58().toString());
 
+    console.log("configs.environment.env: ",configs.environment.env);
+
     const fetchMyCampaigns = async () => {
         try {
             const [response, statusResponse] = await Promise.all([

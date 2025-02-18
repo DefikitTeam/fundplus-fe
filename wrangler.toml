@@ -1,0 +1,26 @@
+name = "fundplus-fe"
+route = "dev.example.com/*"
+compatibility_date = "2024-10-29"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[vars]
+NEXT_PUBLIC_CAMPAIGN_ENDPOINT="https://prepump-stg-api.fundplus.org/v1/campaign"
+NEXT_PUBLIC_STATUS_ENDPOINT="https://prepump-stg-api.fundplus.org/v1/campaign/status"
+NEXT_PUBLIC_TOKEN_ENDPOINT="https://prepump-stg-api.fundplus.org/v1/campaign/token-status"
+NEXT_PUBLIC_UPLOAD_ENDPOINT="https://prepump-stg-api.fundplus.org/v1/campaign/upload"
+NEXT_PUBLIC_CAMPAIGN_CHECK_EVN="development"
+NODE_ENV="development"
+[env.staging]
+vars = {
+NEXT_PUBLIC_CAMPAIGN_CHECK_EVN="staging"
+NODE_ENV="staging"
+}
+route = "prepumpfun-fe.pages.dev"
+
+[env.production]
+vars = {
+NEXT_PUBLIC_CAMPAIGN_CHECK_EVN="production"
+NODE_ENV="production"
+}
+route = "fundplus.org"
